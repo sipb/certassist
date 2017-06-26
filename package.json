@@ -1,0 +1,28 @@
+{
+  "name": "certassist",
+  "version": "1.0.0",
+  "description": "JavaScript interface to ca.mit.edu",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack -p",
+    "watch": "webpack --debug --output-pathinfo --watch"
+  },
+  "author": "Anders Kaseorg",
+  "license": "MIT",
+  "dependencies": {
+    "node-forge": "git+https://github.com/andersk/node-forge.git#530d7d214a87e96e8d6270de931128343f3db54f",
+    "xml2js": "^0.4.17"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.0",
+    "babel-preset-es2015": "^6.24.1",
+    "raw-loader": "^0.5.1",
+    "webpack": "^3.0.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  }
+}

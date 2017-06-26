@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>CertAssist</title>
+  </head>
+  <body>
+    <h1>Get an MIT certificate</h1>
+    <form id="form">
+      <p><label>Kerberos username: <input type="text" id="login"></label></p>
+      <p><label>Kerberos password: <input type="password" id="password"></label></p>
+      <p><label>MIT ID number: <input type="text" id="mitid"></label></p>
+      <p><label>Download password: <input type="password" id="downloadpassword"></label></p>
+      <p><input type="submit" id="submit" value="Go" disabled="disabled"></p>
+    </form>
+    <p>Your new certificate will be saved as a PKCS #12 archive
+      encrypted with your specified download password.  You can then
+      import this *.p12 file into your favorite browser.</p>
+    <pre id="status"></pre>
+    <script type="text/javascript" src="certassist.bundle.js"></script>
+  </body>
+</html>
