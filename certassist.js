@@ -173,10 +173,6 @@ function validate(event) {
     submitElement.disabled = invalid();
 }
 
-function validateSoon(event) {
-    window.setTimeout(() => validate(event), 0);
-}
-
 function submit(event) {
     event.preventDefault();
     if (invalid()) return;
@@ -222,13 +218,13 @@ function submit(event) {
 }
 
 loginElement.addEventListener('change', validate);
-loginElement.addEventListener('keypress', validateSoon);
+loginElement.addEventListener('input', validate);
 passwordElement.addEventListener('change', validate);
-passwordElement.addEventListener('keypress', validateSoon);
+passwordElement.addEventListener('input', validate);
 mitIdElement.addEventListener('change', validate);
-mitIdElement.addEventListener('keypress', validateSoon);
+mitIdElement.addEventListener('input', validate);
 downloadPasswordElement.addEventListener('change', validate);
-downloadPasswordElement.addEventListener('keypress', validateSoon);
+downloadPasswordElement.addEventListener('input', validate);
 document.getElementById('form').addEventListener('submit', submit);
 
 loginElement.focus();
