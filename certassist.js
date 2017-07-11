@@ -200,8 +200,8 @@ function submit(event) {
                 type: 'application/x-pkcs12'
             }));
             const a = document.createElement('a');
-            a.setAttribute('download', login + '-cert.p12');
             a.href = url;
+            a.download = login + '-cert.p12';
             a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
