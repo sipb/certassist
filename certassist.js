@@ -196,15 +196,17 @@ function submit(event) {
     }, cert => {
         if (cert) {
             statusElement.textContent += 'Certificate ready\n';
-            const a = document.createElement('a');
-            a.setAttribute('download', login + '-cert.p12');
-            a.href = URL.createObjectURL(new Blob([cert], {
+            const url = URL.createObjectURL(new Blob([cert], {
                 type: 'application/x-pkcs12'
             }));
+            const a = document.createElement('a');
+            a.setAttribute('download', login + '-cert.p12');
+            a.href = url;
             a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
         working = false;
         loginElement.disabled = false;
