@@ -96,8 +96,8 @@ function downloadCert(options, onDone, onStatus) {
         operation: 'startup',
         sessiontype: 'xml',
         version: 2,
-        os: navigator.oscpu,
-        browser: navigator.userAgent,
+        os: window.navigator.oscpu,
+        browser: window.navigator.userAgent,
     }, reply => {
         if (!reply)
             return onDone(null);
@@ -154,6 +154,30 @@ function downloadCert(options, onDone, onStatus) {
     }, onStatus);
 }
 
+function saveUrl(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+const useObjectUrl = URL.createObjectURL &&
+      // https://crbug.com/733304
+      !window.navigator.userAgent.search(/ Android 7\..* Chrome\/5[0-9]\./);
+
+const saveBlob = useObjectUrl ? (blob, filename) => {
+    const url = URL.createObjectURL(blob);
+    saveUrl(url, filename);
+    URL.revokeObjectURL(url);
+} : (blob, filename) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => saveUrl(reader.result, filename));
+    reader.readAsDataURL(blob);
+};
+
 let working = false;
 const submitElement = document.getElementById('submit');
 const loginElement = document.getElementById('login');
@@ -196,17 +220,9 @@ function submit(event) {
     }, cert => {
         if (cert) {
             statusElement.textContent += 'Certificate ready\n';
-            const url = URL.createObjectURL(new Blob([cert], {
+            saveBlob(new Blob([cert], {
                 type: 'application/x-pkcs12'
-            }));
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = login + '-cert.p12';
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            }), login + '-cert.p12');
         }
         working = false;
         loginElement.disabled = false;
