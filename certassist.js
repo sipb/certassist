@@ -171,7 +171,7 @@ const useObjectUrl = URL.createObjectURL &&
 const saveBlob = useObjectUrl ? (blob, filename) => {
     const url = URL.createObjectURL(blob);
     saveUrl(url, filename);
-    URL.revokeObjectURL(url);
+    setTimeout(0, () => URL.revokeObjectURL(url));
 } : (blob, filename) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => saveUrl(reader.result, filename));
