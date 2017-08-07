@@ -18,7 +18,7 @@ form {
     position: relative;
 }
 
-label {
+#form label {
     display: inline-block;
     text-align: right;
     font-weight: bold;
@@ -26,8 +26,8 @@ label {
     box-sizing: border-box;
 }
 
-input[type="text"],
-input[type="password"] {
+#form input[type="text"],
+#form input[type="password"] {
     margin: 0.25em 0;
     padding: .5em .6em;
     border: 1px solid #ccc;
@@ -37,7 +37,7 @@ input[type="password"] {
     box-sizing: border-box;
 }
 
-input[type="submit"] {
+#form input[type="submit"] {
     background-color: #0078e7;
     color: #fff;
     padding: .5em 2em;
@@ -46,7 +46,7 @@ input[type="submit"] {
     cursor: pointer;
 }
 
-input[type="submit"]:disabled {
+#form input[type="submit"]:disabled {
     opacity: .4;
     cursor: not-allowed;
 }
@@ -58,14 +58,66 @@ input[type="submit"]:disabled {
 }
 
 @media(max-width: 42em) {
-    label {
+    #form label {
         display: block;
         text-align: left;
         width: 100%;
     }
 
-    input[type="text"],
-    input[type="password"] {
+    #form input[type="text"],
+    #form input[type="password"] {
         width: 100%;
     }
+}
+
+.instructions span {
+    display: none;
+    color: #060;
+    margin-top: .5em;
+}
+
+.instructions input {
+    display: none;
+}
+
+.instructions label {
+    cursor: pointer;
+    padding: .2em .5em;
+    border-radius: .3em;
+    color: #090;
+}
+
+.instructions :checked + label {
+    background: #dfd;
+    color: #000;
+}
+
+#browser-chrome :checked ~ body {
+    color: red;
+}
+
+.instructions .platform {
+    display: none;
+}
+
+#browser-chrome:checked ~ .platform-windows,
+#browser-chrome:checked ~ .platform-mac,
+#browser-chrome:checked ~ .platform-linux,
+#browser-chrome:checked ~ .platform-android,
+#browser-firefox:checked ~ .platform-windows,
+#browser-firefox:checked ~ .platform-mac,
+#browser-firefox:checked ~ .platform-linux {
+    display: inline;
+}
+
+#browser-chrome:checked ~ #platform-windows:checked ~ .instructions-chrome-windows,
+#browser-chrome:checked ~ #platform-mac:checked ~ .instructions-chrome-mac,
+#browser-chrome:checked ~ #platform-linux:checked ~ .instructions-chrome-linux,
+#browser-chrome:checked ~ #platform-android:checked ~ .instructions-chrome-android,
+#browser-edge:checked ~ .instructions-edge,
+#browser-firefox:checked ~ #platform-windows:checked ~ .instructions-firefox-windows,
+#browser-firefox:checked ~ #platform-mac:checked ~ .instructions-firefox-mac,
+#browser-firefox:checked ~ #platform-linux:checked ~ .instructions-firefox-linux,
+#browser-safari:checked ~ .instructions-safari {
+    display: block;
 }

@@ -19,7 +19,7 @@
       </div>
       <div class="control">
         <label for="mitid">MIT ID number:</label>
-        <input type="text" id="mitid"></label>
+        <input type="text" id="mitid">
       </div>
       <div class="control">
         <label for="downloadpassword">Download password:</label>
@@ -31,9 +31,52 @@
       </div>
       <pre id="status"></pre>
     </form>
+
     <p>Your new certificate will be saved as a PKCS #12 archive
       encrypted with your specified download password.  You can then
       import this *.p12 file into your favorite browser.</p>
+
+    <p class="instructions"><strong>Instructions for browser:</strong>
+      <input type="radio" name="browser" value="chrome" id="browser-chrome">
+      <label for="browser-chrome">Chrome</label>
+      <input type="radio" name="browser" value="edge" id="browser-edge">
+      <label for="browser-edge">IE/Edge</label>
+      <input type="radio" name="browser" value="firefox" id="browser-firefox">
+      <label for="browser-firefox">Firefox</label>
+      <input type="radio" name="browser" value="safari" id="browser-safari">
+      <label for="browser-safari">Safari</label>
+
+      <strong class="platform platform-windows platform-linux platform-android">on platform:</strong>
+      <input type="radio" name="platform" value="windows" id="platform-windows">
+      <label for="platform-windows" class="platform platform-windows">Windows</label>
+      <input type="radio" name="platform" value="mac" id="platform-mac">
+      <label for="platform-mac" class="platform platform-mac">Mac</label>
+      <input type="radio" name="platform" value="linux" id="platform-linux">
+      <label for="platform-linux" class="platform platform-linux">Linux</label>
+      <input type="radio" name="platform" value="android" id="platform-android">
+      <label for="platform-android" class="platform platform-android">Android</label>
+
+      <span class="instructions-chrome-windows instructions-edge">Open
+        the downloaded *.p12 file, and follow the steps of the
+        Certificate Import Wizard.</span>
+      <span class="instructions-chrome-linux">Save the *.p12 file,
+        then import it at Settings → Advanced → Manage certificates →
+        Your Certificates → Import.</span>
+      <span class="instructions-firefox-windows">Save the *.p12 file,
+        then import it at Options → Advanced → Certificates → View
+        Certificates → Your Certificates → Import.</span>
+      <span class="instructions-firefox-mac
+        instructions-firefox-linux">Save the *.p12 file, then import
+        it at Preferences → Advanced → Certificates → View
+        Certificates → Your Certificates → Import.</span>
+      <span class="instructions-chrome-android">Open the downloaded
+        *.p12 file, and follow the prompts to install your
+        certificate.</span>
+      <span class="instructions-chrome-mac instructions-safari">Open
+        the downloaded *.p12 file, and follow the prompts to add your
+        certificate to the login keychain.</span>
+    </p>
+
     <p><a href="https://github.com/andersk/certassist">Source code on GitHub</a></p>
     <script type="text/javascript" src="certassist.bundle.js"></script>
   </body>
