@@ -11,7 +11,7 @@ const caStore = forge.pki.createCaStore([addTrustCrt]);
 function apiCall(cmd, onDone, onStatus) {
     var done = false;
     const ws = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`, 'base64');
-    const body = Object.entries(cmd).map(entry => entry.map(x => encodeURIComponent(x)).join('=')).join('&');
+    const body = Object.keys(cmd).map(key => [key, cmd[key]].map(x => encodeURIComponent(x)).join('=')).join('&');
     const http = forge.http.createRequest({
         method: 'POST',
         path: '/ca/api',
