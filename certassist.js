@@ -165,8 +165,8 @@ function saveUrl(url, filename) {
 }
 
 const useObjectUrl = URL.createObjectURL &&
-      // https://crbug.com/733304
-      !window.navigator.userAgent.search(/ Android 7\..* Chrome\/5[0-9]\./);
+    // https://crbug.com/733304
+    !/ Android 7\..* Chrome\/5[0-9]\./.test(window.navigator.userAgent);
 
 const saveBlob = useObjectUrl ? (blob, filename) => {
     const url = URL.createObjectURL(blob);
