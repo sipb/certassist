@@ -168,7 +168,9 @@ const useObjectUrl = URL.createObjectURL &&
     // https://crbug.com/733304
     !/ Android 7\..* Chrome\/5[0-9]\./.test(window.navigator.userAgent);
 
-const saveBlob = useObjectUrl ? (blob, filename) => {
+const saveBlob = window.navigator.msSaveOrOpenBlob ? (blob, filename) => {
+    window.navigator.msSaveOrOpenBlob(blob, filename);
+} : useObjectUrl ? (blob, filename) => {
     const url = URL.createObjectURL(blob);
     saveUrl(url, filename);
     setTimeout(0, () => URL.revokeObjectURL(url));
