@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="certassist.css" />
@@ -76,6 +76,43 @@
         the downloaded *.p12 file, and follow the prompts to add your
         certificate to the login keychain.</span>
     </p>
+
+    <div class="instructions">
+      <strong>How does this work?</strong>
+      <input type="checkbox" id="howitworks">
+      <label for="howitworks">Details →</label>
+      <div id="howitworks-text">
+        <p>This uses the CertAid API provided
+          by <a href="https://ca.mit.edu">ca.mit.edu</a> to obtain
+          certificates and let you to download and import them, even if
+          ca.mit.edu does not support your browser.</p>
+
+        <p>As a workaround for the absence of
+          <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>
+          headers on ca.mit.edu, CertAssist uses a JavaScript TLS
+          library
+          (<a href="https://github.com/digitalbazaar/forge#readme">Forge</a>,
+          with one
+          upstream-approved <a href="https://github.com/digitalbazaar/forge/pull/516">patch</a>
+          for SHA-384 certificate validation) to make an end-to-end
+          encrypted connection to https://ca.mit.edu.  The encrypted
+          connection is relayed over a WebSocket proxy on this server
+          that does not need to be trusted (but is itself encrypted
+          anyway, because it might as well be).</p>
+
+        <p>The downloaded certificate file is delivered from the client
+          side
+          using <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL">createObjectURL</a>,
+          a <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs">data
+            URL</a>,
+          or <a href="https://msdn.microsoft.com/en-us/library/hh772332(v=vs.85).aspx">msSaveOrOpenBlob</a>,
+          depending on browser support.</p>
+
+        <p>This design ensures that your private information is only
+          visible to your browser and ca.mit.edu, and is not exposed to
+          this server.</p>
+      </div>
+    </div>
 
     <p><a href="https://github.com/andersk/certassist">Source code on GitHub</a></p>
     <script type="text/javascript" src="certassist.bundle.js"></script>

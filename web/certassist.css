@@ -70,7 +70,8 @@ form {
     }
 }
 
-.instructions span {
+.instructions span,
+.instructions div {
     display: none;
     color: #060;
     margin-top: .5em;
@@ -119,5 +120,9 @@ form {
 #browser-firefox:checked ~ #platform-mac:checked ~ .instructions-firefox-mac,
 #browser-firefox:checked ~ #platform-linux:checked ~ .instructions-firefox-linux,
 #browser-safari:checked ~ .instructions-safari {
+    display: block;
+}
+
+#howitworks:checked ~ #howitworks-text {
     display: block;
 }
