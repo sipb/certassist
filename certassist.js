@@ -173,7 +173,7 @@ const saveBlob = window.navigator.msSaveOrOpenBlob ? (blob, filename) => {
 } : useObjectUrl ? (blob, filename) => {
     const url = URL.createObjectURL(blob);
     saveUrl(url, filename);
-    setTimeout(0, () => URL.revokeObjectURL(url));
+    setTimeout(() => URL.revokeObjectURL(url), 0);
 } : (blob, filename) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => saveUrl(reader.result, filename));
