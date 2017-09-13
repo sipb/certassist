@@ -34,7 +34,7 @@ function apiCall(cmd, onDone, onStatus) {
                     verified = {
                         alert: forge.tls.Alert.Description.bad_certificate,
                         message: 'Certificate common name does not match expected server.'
-                    }
+                    };
                 }
             }
             return verified;
@@ -63,7 +63,7 @@ function apiCall(cmd, onDone, onStatus) {
             }
         },
         closed: () => {
-            ws.close()
+            ws.close();
             if (!done) {
                 done = true;
                 onDone(null);
@@ -78,12 +78,12 @@ function apiCall(cmd, onDone, onStatus) {
     ws.addEventListener('message', event => tls.process(atob(event.data)));
     ws.addEventListener('error', event => {
         console.log(event);
-        onStatus('WebSocket error')
+        onStatus('WebSocket error');
     });
 }
 
 function finish(sessionid, onDone, onStatus) {
-    onStatus('Closing session')
+    onStatus('Closing session');
     apiCall({
         operation: 'finish',
         sessionid: sessionid
@@ -91,7 +91,7 @@ function finish(sessionid, onDone, onStatus) {
 }
 
 function downloadCert(options, onDone, onStatus) {
-    onStatus('Opening session')
+    onStatus('Opening session');
     apiCall({
         operation: 'startup',
         sessiontype: 'xml',
@@ -108,7 +108,7 @@ function downloadCert(options, onDone, onStatus) {
         }
         const sessionid = reply.startupresponse.sessionid;
 
-        onStatus('Authenticating')
+        onStatus('Authenticating');
         apiCall({
             operation: 'authenticate',
             sessionid: sessionid,
@@ -127,7 +127,7 @@ function downloadCert(options, onDone, onStatus) {
                 return onDone(null);
             }
 
-            onStatus('Downloading certificate')
+            onStatus('Downloading certificate');
             apiCall({
                 operation: 'downloadcert',
                 sessionid: sessionid,
