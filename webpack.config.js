@@ -24,6 +24,9 @@ module.exports = {
                 'extract-loader',
                 'css-loader'
             ]
+        }, {
+            test: /\.png$/,
+            loader: 'file-loader'
         }]
     }
 };
