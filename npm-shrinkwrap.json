@@ -2644,7 +2644,7 @@
       }
     },
     "node-forge": {
-      "version": "git+https://github.com/andersk/node-forge.git#530d7d214a87e96e8d6270de931128343f3db54f"
+      "version": "git+https://github.com/digitalbazaar/forge.git#74b7472b2143735fca0c68a7f20ba32c4fbd5397"
     },
     "node-libs-browser": {
       "version": "2.0.0",
@@ -4159,12 +4159,6 @@
       "integrity": "sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=",
       "dev": true
     },
-    "string_decoder": {
-      "version": "0.10.31",
-      "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-0.10.31.tgz",
-      "integrity": "sha1-YuIDvEF2bGwoyfyEMB2rHFMQ+pQ=",
-      "dev": true
-    },
     "string-width": {
       "version": "2.1.1",
       "resolved": "https://registry.npmjs.org/string-width/-/string-width-2.1.1.tgz",
@@ -4197,6 +4191,12 @@
           }
         }
       }
+    },
+    "string_decoder": {
+      "version": "0.10.31",
+      "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-0.10.31.tgz",
+      "integrity": "sha1-YuIDvEF2bGwoyfyEMB2rHFMQ+pQ=",
+      "dev": true
     },
     "strip-ansi": {
       "version": "3.0.1",
