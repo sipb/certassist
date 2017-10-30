@@ -8,7 +8,7 @@ The instructions below are for developers who want to make changes to CertAssist
 
 ## Building
 
-CertAssist builds with [WebPack](https://webpack.js.org/), and therefore requires [Node.js](https://nodejs.org/).
+CertAssist builds with [webpack](https://webpack.js.org/), and therefore requires [Node.js](https://nodejs.org/).
 
     npm install
     npm run build
