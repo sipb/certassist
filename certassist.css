@@ -1,6 +1,5 @@
 body {
-    font-family: "Lucida Grande", Arial, sans-serif;
-    font-size: 86%;
+    font: 86%/133% "Lucida Grande", Arial, sans-serif;
     margin-left: auto;
     margin-right: auto;
     max-width: 60em;
@@ -37,7 +36,7 @@ form {
     box-sizing: border-box;
 }
 
-#form input[type="submit"] {
+#form button[type="submit"] {
     background-color: #0078e7;
     color: #fff;
     padding: .5em 2em;
@@ -46,7 +45,7 @@ form {
     cursor: pointer;
 }
 
-#form input[type="submit"]:disabled {
+#form button[type="submit"]:disabled {
     opacity: .4;
     cursor: not-allowed;
 }
@@ -91,6 +90,11 @@ form {
 .instructions :checked + label {
     background: #dfd;
     color: #000;
+}
+
+.instructions :checked + label .off,
+.instructions :not(:checked) + label .on {
+    display: none;
 }
 
 #browser-chrome :checked ~ body {
@@ -139,6 +143,6 @@ form {
     padding: 0 1em 0 0;
 }
 
-#footer img {
+#footer img, #footer i {
     vertical-align: middle;
 }

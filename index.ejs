@@ -26,7 +26,7 @@
       </div>
       <div class="control">
         <label></label>
-        <input type="submit" id="submit" value="Go" disabled="disabled">
+        <button type="submit" id="submit" disabled="disabled"><i class="fa fa-download"></i> Go</button>
       </div>
       <pre id="status"></pre>
     </form>
@@ -35,25 +35,25 @@
       encrypted with your specified download password.  You can then
       import this *.p12 file into your favorite browser.</p>
 
-    <p class="instructions"><strong>Instructions for browser:</strong>
+    <p class="instructions"><strong>Browser instructions:</strong>
       <input type="radio" name="browser" value="chrome" id="browser-chrome">
-      <label for="browser-chrome">Chrome</label>
+      <label for="browser-chrome"><i class="fa fa-chrome"></i> Chrome</label>
       <input type="radio" name="browser" value="edge" id="browser-edge">
-      <label for="browser-edge">IE/Edge</label>
+      <label for="browser-edge"><i class="fa fa-edge"></i> IE/Edge</label>
       <input type="radio" name="browser" value="firefox" id="browser-firefox">
-      <label for="browser-firefox">Firefox</label>
+      <label for="browser-firefox"><i class="fa fa-firefox"></i> Firefox</label>
       <input type="radio" name="browser" value="safari" id="browser-safari">
-      <label for="browser-safari">Safari</label>
+      <label for="browser-safari"><i class="fa fa-safari"></i> Safari</label>
 
-      <strong class="platform platform-windows platform-linux platform-android">on platform:</strong>
+      <strong class="platform platform-windows platform-linux platform-android">on</strong>
       <input type="radio" name="platform" value="windows" id="platform-windows">
-      <label for="platform-windows" class="platform platform-windows">Windows</label>
+      <label for="platform-windows" class="platform platform-windows"><i class="fa fa-windows"></i> Windows</label>
       <input type="radio" name="platform" value="mac" id="platform-mac">
-      <label for="platform-mac" class="platform platform-mac">Mac</label>
+      <label for="platform-mac" class="platform platform-mac"><i class="fa fa-apple"></i> Mac</label>
       <input type="radio" name="platform" value="linux" id="platform-linux">
-      <label for="platform-linux" class="platform platform-linux">Linux</label>
+      <label for="platform-linux" class="platform platform-linux"><i class="fa fa-linux"></i> Linux</label>
       <input type="radio" name="platform" value="android" id="platform-android">
-      <label for="platform-android" class="platform platform-android">Android</label>
+      <label for="platform-android" class="platform platform-android"><i class="fa fa-android"></i> Android</label>
 
       <span class="instructions-chrome-windows instructions-edge">Open
         the downloaded *.p12 file, and follow the steps of the
@@ -79,7 +79,7 @@
     <div class="instructions">
       <strong>How does this work?</strong>
       <input type="checkbox" id="howitworks">
-      <label for="howitworks">Details →</label>
+      <label for="howitworks">Details <i class="fa fa-caret-right off"></i><i class="fa fa-caret-down on"></i></label>
       <div id="howitworks-text">
         <p>This uses the CertAid API provided
           by <a href="https://ca.mit.edu">ca.mit.edu</a> to obtain
@@ -115,9 +115,9 @@
         fuzzball" /> CertAssist is provided
         by <a href="https://sipb.mit.edu/">SIPB</a>; it is not an
         official IS&amp;T service.</li>
-      <li><img src="<%- require('./github.png') %>" alt="GitHub" />
-        <a href="https://github.com/sipb/certassist">Source code</a>
-        on GitHub.</li>
+      <li><i class="fa fa-2x
+        fa-github"></i> <a href="https://github.com/sipb/certassist">Source
+        code</a> on GitHub.</li>
     </ul>
   </body>
 </html>

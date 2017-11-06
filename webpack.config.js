@@ -23,7 +23,7 @@ module.exports = {
             test: /\.css$/,
             use: ExtractTextPlugin.extract('css-loader')
         }, {
-            test: /\.png$/,
+            test: /\.(?:eot|png|svg|ttf|woff|woff2)$/,
             loader: 'file-loader'
         }]
     }

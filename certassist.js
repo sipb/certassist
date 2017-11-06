@@ -7,6 +7,7 @@ import xml2js from 'xml2js';
 import addTrustCrt from 'raw-loader!./AddTrust_External_Root.crt';
 
 import './certassist.css';
+import 'font-awesome/css/font-awesome.css';
 
 const caStore = forge.pki.createCaStore([addTrustCrt]);
 
