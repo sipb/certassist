@@ -6,6 +6,8 @@ import xml2js from 'xml2js';
 
 import addTrustCrt from 'raw-loader!./AddTrust_External_Root.crt';
 
+import './certassist.css';
+
 const caStore = forge.pki.createCaStore([addTrustCrt]);
 
 function apiCall(cmd, onDone, onStatus) {

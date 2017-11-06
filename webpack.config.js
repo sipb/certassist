@@ -1,3 +1,4 @@
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
@@ -10,7 +11,8 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: 'index.ejs'
-        })
+        }),
+        new ExtractTextPlugin('[name].[contenthash].css')
     ],
     module: {
         rules: [{
@@ -19,11 +21,7 @@ module.exports = {
             loader: 'babel-loader'
         }, {
             test: /\.css$/,
-            use: [
-                'file-loader?name=[name].[hash].[ext]',
-                'extract-loader',
-                'css-loader'
-            ]
+            use: ExtractTextPlugin.extract('css-loader')
         }, {
             test: /\.png$/,
             loader: 'file-loader'
