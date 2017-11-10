@@ -25,10 +25,16 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
             },
             connected: connection => connection.prepare(request.toString() + request.body),
             tlsDataReady: connection => {
-                if (ws.protocol === 'base64')
-                    ws.send(btoa(connection.tlsData.getBytes()));
-                else
-                    ws.send(forge.util.binary.raw.decode(connection.tlsData.getBytes()));
+                const bytes = connection.tlsData.getBytes();
+                // Avoid empty messages, which some websockify
+                // versions misinterpret as closing the connection
+                // (https://github.com/novnc/websockify/issues/312).
+                if (bytes.length) {
+                    if (ws.protocol === 'base64')
+                        ws.send(btoa(bytes));
+                    else
+                        ws.send(forge.util.binary.raw.decode(bytes));
+                }
             },
             dataReady: connection => {
                 buffer.putBytes(connection.data.getBytes());
