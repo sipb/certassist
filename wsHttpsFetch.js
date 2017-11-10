@@ -2,7 +2,8 @@ import forge from 'node-forge';
 import 'node-forge/lib/http';
 
 async function wsHttpsFetch(wsUrl, request, caStore) {
-    const ws = new WebSocket(wsUrl, 'base64');
+    const ws = new WebSocket(wsUrl, ['binary', 'base64']);
+    ws.binaryType = 'arraybuffer';
     let done = false;
     const buffer = forge.util.createBuffer();
     const response = forge.http.createResponse();
@@ -23,7 +24,12 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
                 return verified;
             },
             connected: connection => connection.prepare(request.toString() + request.body),
-            tlsDataReady: connection => ws.send(btoa(connection.tlsData.getBytes())),
+            tlsDataReady: connection => {
+                if (ws.protocol === 'base64')
+                    ws.send(btoa(connection.tlsData.getBytes()));
+                else
+                    ws.send(forge.util.binary.raw.decode(connection.tlsData.getBytes()));
+            },
             dataReady: connection => {
                 buffer.putBytes(connection.data.getBytes());
                 if (!done && !response.bodyReceived) {
@@ -55,8 +61,20 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
                 }
             },
         });
-        ws.addEventListener('open', event => tls.handshake());
-        ws.addEventListener('message', event => tls.process(atob(event.data)));
+        ws.addEventListener('open', event => {
+            console.log('Opened', ws.protocol, 'WebSocket');
+            tls.handshake();
+        });
+        ws.addEventListener('close', event => {
+            console.log('Closed WebSocket');
+            tls.close();
+        });
+        ws.addEventListener('message', event => {
+            if (ws.protocol === 'base64')
+                tls.process(atob(event.data));
+            else
+                tls.process(forge.util.binary.raw.encode(new Uint8Array(event.data)));
+        });
         ws.addEventListener('error', event => {
             console.log('WebSocket error:', event);
             if (!done) {
