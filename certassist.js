@@ -40,6 +40,10 @@ async function apiCall(cmd) {
             body: Object.keys(cmd).map(key => [key, cmd[key]].map(x => encodeURIComponent(x)).join('=')).join('&')
         }),
         caStore);
+    if (response.code != 200) {
+        console.log('Server error:', response.code, response.message);
+        throw new Error('Server error: ' + response.code + ' ' + response.message);
+    }
     return xmlParse(response.body);
 }
 
