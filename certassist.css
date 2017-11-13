@@ -6,10 +6,40 @@ body {
     padding: 0 1.5em;
 }
 
+.tabs > input[type="radio"] {
+    display: none;
+}
+
+.tabs > label {
+    display: inline-block;
+    padding: 0.5em 1.5em;
+    border-radius: .3em .3em 0 0;
+    cursor: pointer;
+    color: #090;
+}
+
+.tabs > :checked + label {
+    background-color: #cfd;
+    color: #000;
+}
+
 form {
-    background-color: #ccffdd;
+    display: none;
+}
+
+#mit-tab:checked ~ #mit-form,
+#csail-tab:checked ~ #csail-form {
+    display: block;
+}
+
+form {
+    background-color: #cfd;
     border-radius: .3em;
     padding: 1em;
+}
+
+#mit-form {
+    border-top-left-radius: 0;
 }
 
 .control {
@@ -17,7 +47,7 @@ form {
     position: relative;
 }
 
-#form label {
+form label {
     display: inline-block;
     text-align: right;
     font-weight: bold;
@@ -25,8 +55,8 @@ form {
     box-sizing: border-box;
 }
 
-#form input[type="text"],
-#form input[type="password"] {
+form input[type="text"],
+form input[type="password"] {
     margin: 0.25em 0;
     padding: .5em .6em;
     border: 1px solid #ccc;
@@ -36,7 +66,7 @@ form {
     box-sizing: border-box;
 }
 
-#form button[type="submit"] {
+form button[type="submit"] {
     background-color: #0078e7;
     color: #fff;
     padding: .5em 2em;
@@ -45,26 +75,26 @@ form {
     cursor: pointer;
 }
 
-#form button[type="submit"]:disabled {
+form button[type="submit"]:disabled {
     opacity: .4;
     cursor: not-allowed;
 }
 
-#status:not(:empty) {
-    background-color: #eeffee;
+form pre:not(:empty) {
+    background-color: #efe;
     padding: .5em .6em;
     border-radius: .3em;
 }
 
 @media(max-width: 42em) {
-    #form label {
+    form label {
         display: block;
         text-align: left;
         width: 100%;
     }
 
-    #form input[type="text"],
-    #form input[type="password"] {
+    form input[type="text"],
+    form input[type="password"] {
         width: 100%;
     }
 }
@@ -88,17 +118,13 @@ form {
 }
 
 .instructions :checked + label {
-    background: #dfd;
+    background: #cfd;
     color: #000;
 }
 
 .instructions :checked + label .off,
 .instructions :not(:checked) + label .on {
     display: none;
-}
-
-#browser-chrome :checked ~ body {
-    color: red;
 }
 
 .instructions .platform {

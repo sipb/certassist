@@ -6,10 +6,7 @@ import xml2js from 'xml2js';
 
 import wsHttpsFetch from './wsHttpsFetch.js';
 import saveBlob from './saveBlob.js';
-
-import addTrustCrt from 'raw-loader!./AddTrust_External_Root.crt';
-
-const caStore = forge.pki.createCaStore([addTrustCrt]);
+import caStore from './addTrustStore.js';
 
 function xmlParse(...args) {
     return new Promise((resolve, reject) => {
@@ -24,7 +21,7 @@ function xmlParse(...args) {
 
 async function apiCall(cmd) {
     const response = await wsHttpsFetch(
-        `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`,
+        `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/mit`,
         forge.http.createRequest({
             method: 'POST',
             path: '/ca/api',
@@ -97,12 +94,12 @@ async function downloadCert(options) {
 }
 
 let working = false;
-const submitElement = document.getElementById('submit');
-const loginElement = document.getElementById('login');
-const passwordElement = document.getElementById('password');
-const mitIdElement = document.getElementById('mitid');
-const downloadPasswordElement = document.getElementById('downloadpassword');
-const statusElement = document.getElementById('status');
+const submitElement = document.getElementById('mit-submit');
+const loginElement = document.getElementById('mit-login');
+const passwordElement = document.getElementById('mit-password');
+const mitIdElement = document.getElementById('mit-id');
+const downloadPasswordElement = document.getElementById('mit-downloadpassword');
+const statusElement = document.getElementById('mit-status');
 
 function invalid() {
     return working || !loginElement.value ||
@@ -143,7 +140,7 @@ async function submit(event) {
         statusElement.textContent += 'Certificate ready\n';
         saveBlob(new Blob([cert], {
             type: 'application/x-pkcs12'
-        }), login + '-cert.p12');
+        }), login + '-mit-cert.p12');
     } catch (error) {
         statusElement.textContent += error + '\n';
         throw error;
@@ -165,6 +162,6 @@ mitIdElement.addEventListener('change', validate);
 mitIdElement.addEventListener('input', validate);
 downloadPasswordElement.addEventListener('change', validate);
 downloadPasswordElement.addEventListener('input', validate);
-document.getElementById('form').addEventListener('submit', submit);
+document.getElementById('mit-form').addEventListener('submit', submit);
 
 loginElement.focus();

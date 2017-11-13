@@ -7,29 +7,56 @@
   </head>
   <body>
     <h1>Get an MIT certificate</h1>
-    <form id="form">
-      <div class="control">
-        <label for="login">Kerberos username:</label>
-        <input type="text" id="login">
-      </div>
-      <div class="control">
-        <label for="password">Kerberos password:</label>
-        <input type="password" id="password">
-      </div>
-      <div class="control">
-        <label for="mitid">MIT ID number:</label>
-        <input type="text" id="mitid">
-      </div>
-      <div class="control">
-        <label for="downloadpassword">Download password:</label>
-        <input type="password" id="downloadpassword">
-      </div>
-      <div class="control">
-        <label></label>
-        <button type="submit" id="submit" disabled="disabled"><i class="fa fa-download"></i> Go</button>
-      </div>
-      <pre id="status"></pre>
-    </form>
+
+    <div class="tabs">
+      <input id="mit-tab" type="radio" name="tabs" checked
+      /><label for="mit-tab">MIT</label><input id="csail-tab"
+      type="radio" name="tabs" /><label for="csail-tab">CSAIL</label>
+
+      <form id="mit-form">
+        <div class="control">
+          <label for="mit-login">Kerberos username:</label>
+          <input type="text" id="mit-login">
+        </div>
+        <div class="control">
+          <label for="mit-password">Kerberos password:</label>
+          <input type="password" id="mit-password">
+        </div>
+        <div class="control">
+          <label for="mit-id">MIT ID number:</label>
+          <input type="text" id="mit-id">
+        </div>
+        <div class="control">
+          <label for="mit-downloadpassword">Download password:</label>
+          <input type="password" id="mit-downloadpassword">
+        </div>
+        <div class="control">
+          <label></label>
+          <button type="submit" id="mit-submit" disabled="disabled"><i class="fa fa-download"></i> Go</button>
+        </div>
+        <pre id="mit-status"></pre>
+      </form>
+
+      <form id="csail-form">
+        <div class="control">
+          <label for="csail-login">CSAIL username:</label>
+          <input type="text" id="csail-login">
+        </div>
+        <div class="control">
+          <label for="csail-password">CSAIL password:</label>
+          <input type="password" id="csail-password">
+        </div>
+        <div class="control">
+          <label for="csail-downloadpassword">Download password:</label>
+          <input type="password" id="csail-downloadpassword">
+        </div>
+        <div class="control">
+          <label></label>
+          <button type="submit" id="csail-submit" disabled="disabled"><i class="fa fa-download"></i> Go</button>
+        </div>
+        <pre id="csail-status"></pre>
+      </form>
+    </div>
 
     <p>Your new certificate will be saved as a PKCS #12 archive
       encrypted with your specified download password.  You can then

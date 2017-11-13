@@ -8,16 +8,18 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
     const buffer = forge.util.createBuffer();
     const response = forge.http.createResponse();
     return new Promise((resolve, reject) => {
+        const [_, hostname] = request.getField('Host').match(/^([^:]*)(?::\d+)?$/);
         const tls = forge.tls.createConnection({
             server: false,
             caStore: caStore,
-            virtualHost: request.getField('Host'),
+            virtualHost: hostname,
             verify: (connection, verified, depth, certs) => {
                 if (depth === 0) {
-                    if (certs[0].subject.getField('CN').value !== request.getField('Host')) {
+                    const cn = certs[0].subject.getField('CN').value;
+                    if (cn !== hostname) {
                         verified = {
                             alert: forge.tls.Alert.Description.bad_certificate,
-                            message: 'Certificate common name does not match expected server.',
+                            message: `Certificate common name ${cn} does not match expected server ${hostname}.`,
                         };
                     }
                 }
