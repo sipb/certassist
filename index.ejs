@@ -109,19 +109,21 @@
       <label for="howitworks">Details <i class="fa fa-caret-right off"></i><i class="fa fa-caret-down on"></i></label>
       <div id="howitworks-text">
         <p>This uses the CertAid API provided
-          by <a href="https://ca.mit.edu">ca.mit.edu</a> to obtain
-          certificates and let you to download and import them, even if
-          ca.mit.edu does not support your browser.</p>
+          by <a href="https://ca.mit.edu/">ca.mit.edu</a>, and the
+          SPKAC form provided
+          by <a href="https://ca.csail.mit.edu:1443/">ca.csail.mit.edu</a>,
+          to obtain certificates and let you to download and import
+          them, even if your browser lacks &lt;keygen&gt; support.</p>
 
         <p>As a workaround for the absence of
           <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>
-          headers on ca.mit.edu, CertAssist uses
+          headers on these servers, CertAssist uses
           a <a href="https://github.com/digitalbazaar/forge#readme">JavaScript
           TLS library</a> to make an end-to-end encrypted and
-          authenticated connection to https://ca.mit.edu.  The
-          encrypted connection is relayed over a WebSocket proxy on
-          this server that does not need to be trusted (but is itself
-          encrypted anyway, because it might as well be).</p>
+          authenticated HTTPS connection to them.  The encrypted
+          connection is relayed over a WebSocket proxy on this server
+          that does not need to be trusted (but is itself encrypted
+          anyway, because it might as well be).</p>
 
         <p>The downloaded certificate file is delivered from the client
           side
@@ -132,8 +134,8 @@
           depending on browser support.</p>
 
         <p>This design ensures that your private information is only
-          visible to your browser and ca.mit.edu, and is not exposed to
-          this server.</p>
+          visible to your browser and ca.mit.edu or ca.csail.mit.edu,
+          and is not exposed to this server.</p>
       </div>
     </div>
 
@@ -141,7 +143,7 @@
       <li><img src="<%- require('./sipb-fuzzball.png') %>" alt="SIPB
         fuzzball" /> CertAssist is provided
         by <a href="https://sipb.mit.edu/">SIPB</a>; it is not an
-        official IS&amp;T service.</li>
+        official IS&amp;T or TIG service.</li>
       <li><i class="fa fa-2x
         fa-github"></i> <a href="https://github.com/sipb/certassist">Source
         code</a> on GitHub.</li>
