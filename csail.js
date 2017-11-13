@@ -26,7 +26,7 @@ async function downloadCert(options) {
             },
         }),
         caStore);
-    if (formResponse.code != 200) {
+    if (formResponse.code !== 200) {
         console.log('Server error:', formResponse.code, formResponse.message);
         throw new Error('Server error: ' + formResponse.code + ' ' + formResponse.message);
     }
@@ -34,7 +34,7 @@ async function downloadCert(options) {
     const doc = new DOMParser().parseFromString(formResponse.body, formResponse.fields['Content-Type'][0]);
     const [keygen] = doc.getElementsByName('spkac');
     const keytype = keygen.getAttribute('keytype');
-    if (keytype != 'rsa')
+    if (keytype !== 'rsa')
         throw new Error('Unrecognized keytype ' + keytype);
     const challenge = keygen.getAttribute('challenge');
 
@@ -83,7 +83,7 @@ async function downloadCert(options) {
             ].map(p => p.map(x => encodeURIComponent(x)).join('=')).join('&')
         }),
         caStore);
-    if (spkacResponse.code != 200) {
+    if (spkacResponse.code !== 200) {
         console.log('Server error:', spkacResponse.code, spkacResponse.message);
         throw new Error('Server error: ' + spkacResponse.code + ' ' + spkacResponse.message);
     }
