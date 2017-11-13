@@ -1,17 +1,13 @@
 'use strict';
 
-import 'babel-polyfill';
-
 import forge from 'node-forge';
 import 'node-forge/lib/http';
 import xml2js from 'xml2js';
 
 import wsHttpsFetch from './wsHttpsFetch.js';
+import saveBlob from './saveBlob.js';
 
 import addTrustCrt from 'raw-loader!./AddTrust_External_Root.crt';
-
-import './certassist.css';
-import 'font-awesome/css/font-awesome.css';
 
 const caStore = forge.pki.createCaStore([addTrustCrt]);
 
@@ -99,32 +95,6 @@ async function downloadCert(options) {
         });
     }
 }
-
-function saveUrl(url, filename) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-const useObjectUrl = URL.createObjectURL &&
-    // https://crbug.com/733304
-    !/ Android 7\..* Chrome\/5[0-9]\./.test(window.navigator.userAgent);
-
-const saveBlob = window.navigator.msSaveOrOpenBlob ? (blob, filename) => {
-    window.navigator.msSaveOrOpenBlob(blob, filename);
-} : useObjectUrl ? (blob, filename) => {
-    const url = URL.createObjectURL(blob);
-    saveUrl(url, filename);
-    setTimeout(() => URL.revokeObjectURL(url), 0);
-} : (blob, filename) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => saveUrl(reader.result, filename));
-    reader.readAsDataURL(blob);
-};
 
 let working = false;
 const submitElement = document.getElementById('submit');
