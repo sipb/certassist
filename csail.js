@@ -65,7 +65,7 @@ async function downloadCert(options) {
 
     options.onStatus('Downloading certificate');
     const spkacResponse = await wsHttpsFetch(
-        `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`,
+        `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/csail`,
         forge.http.createRequest({
             method: 'POST',
             path: '/request',
