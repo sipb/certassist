@@ -1,13 +1,11 @@
 'use strict';
 
-import forge from 'node-forge';
+import forge, {asn1} from 'node-forge';
 import 'node-forge/lib/http';
 
 import wsHttpsFetch from './wsHttpsFetch.js';
 import saveBlob from './saveBlob.js';
 import caStore from './addTrustStore.js';
-
-const asn1 = forge.asn1;
 
 const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/csail`;
 
@@ -111,7 +109,7 @@ async function downloadCert(options) {
         algorithm: '3des',
         friendlyName: `${options.login}'s CSAIL Certificate`,
     });
-    return forge.util.binary.raw.decode(forge.asn1.toDer(p12).getBytes());
+    return forge.util.binary.raw.decode(asn1.toDer(p12).getBytes());
 }
 
 let working = false;
