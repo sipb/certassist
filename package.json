@@ -2,13 +2,19 @@
   "name": "certassist",
   "version": "1.0.0",
   "description": "JavaScript interface to ca.mit.edu and ca.csail.mit.edu",
+  "homepage": "https://certassist.mit.edu/",
+  "bugs": "https://github.com/sipb/certassist/issues",
+  "license": "MIT",
+  "author": "Anders Kaseorg",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sipb/certassist.git"
+  },
   "scripts": {
     "build": "webpack -p",
     "watch": "webpack --debug --output-pathinfo --watch"
   },
-  "author": "Anders Kaseorg",
-  "license": "MIT",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "font-awesome": "^4.7.0",
