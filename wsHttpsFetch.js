@@ -32,10 +32,19 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
                 // versions misinterpret as closing the connection
                 // (https://github.com/novnc/websockify/issues/312).
                 if (bytes.length) {
-                    if (ws.protocol === 'base64')
-                        ws.send(btoa(bytes));
-                    else
-                        ws.send(forge.util.binary.raw.decode(bytes));
+                    try {
+                        if (ws.protocol === 'base64')
+                            ws.send(btoa(bytes));
+                        else
+                            ws.send(forge.util.binary.raw.decode(bytes));
+                    } catch (error) {
+                        if (done)
+                            // Firefox on Android seems to enjoy
+                            // throwing NS_ERROR_NOT_CONNECTED here.
+                            console.log(error);
+                        else
+                            throw error;
+                    }
                 }
             },
             dataReady: connection => {
