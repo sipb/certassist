@@ -26,5 +26,6 @@ module.exports = {
             test: /\.(?:eot|png|svg|ttf|woff|woff2)$/,
             loader: 'file-loader'
         }]
-    }
+    },
+    devtool: 'source-map',
 };
