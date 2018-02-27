@@ -18,7 +18,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "font-awesome": "^4.7.0",
-    "node-forge": "git+https://github.com/digitalbazaar/forge.git#74b7472b2143735fca0c68a7f20ba32c4fbd5397",
+    "node-forge": "git+https://github.com/digitalbazaar/forge.git#a5c28d20a2fca3009d10e1e2c4020c0550a0b888",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {
