@@ -21,7 +21,14 @@ module.exports = {
             loader: 'babel-loader'
         }, {
             test: /\.css$/,
-            use: ExtractTextPlugin.extract('css-loader')
+            use: ExtractTextPlugin.extract({
+                use: {
+                    loader: 'css-loader',
+                    options: {
+                        sourceMap: true,
+                    },
+                },
+            }),
         }, {
             test: /\.(?:eot|png|svg|ttf|woff|woff2)$/,
             loader: 'file-loader',
