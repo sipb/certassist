@@ -24,7 +24,10 @@ module.exports = {
             use: ExtractTextPlugin.extract('css-loader')
         }, {
             test: /\.(?:eot|png|svg|ttf|woff|woff2)$/,
-            loader: 'file-loader'
+            loader: 'file-loader',
+            options: {
+                'name': '[name].[hash].[ext]',
+            },
         }]
     },
     devtool: 'source-map',
