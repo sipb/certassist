@@ -30,7 +30,7 @@ module.exports = {
                 },
             }),
         }, {
-            test: /\.(?:eot|png|svg|ttf|woff|woff2)$/,
+            test: /\.(?:eot|ico|png|svg|ttf|woff|woff2)$/,
             loader: 'file-loader',
             options: {
                 'name': '[name].[hash].[ext]',
