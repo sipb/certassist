@@ -1,4 +1,4 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
@@ -9,10 +9,13 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].[contenthash].css',
+            chunkFilename: '[id].[contenthash].css',
+        }),
         new HtmlWebpackPlugin({
             template: 'index.ejs'
         }),
-        new ExtractTextPlugin('[name].[contenthash].css')
     ],
     module: {
         rules: [{
@@ -21,14 +24,15 @@ module.exports = {
             loader: 'babel-loader'
         }, {
             test: /\.css$/,
-            use: ExtractTextPlugin.extract({
-                use: {
+            use: [
+                MiniCssExtractPlugin.loader,
+                {
                     loader: 'css-loader',
                     options: {
                         sourceMap: true,
                     },
                 },
-            }),
+            ],
         }, {
             test: /\.(?:eot|ico|png|svg|ttf|woff|woff2)$/,
             loader: 'file-loader',
