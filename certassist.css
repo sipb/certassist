@@ -9,7 +9,8 @@ body {
 }
 
 .tabs > input[type="radio"] {
-    display: none;
+    position: absolute;
+    clip: rect(0px, 0px, 0px, 0px);
 }
 
 .tabs > label {
@@ -20,7 +21,12 @@ body {
     color: #090;
 }
 
-.tabs > :checked + label {
+.tabs > input:focus + label {
+    outline: 1px dotted;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+.tabs > input:checked + label {
     background-color: #cfd;
     color: #000;
 }
@@ -84,11 +90,17 @@ form {
 }
 
 #mit-advanced {
-    display: none;
+    position: absolute;
+    clip: rect(0px, 0px, 0px, 0px);
 }
 
 #mit-advanced + .control > label[for="mit-advanced"] {
     cursor: pointer;
+}
+
+#mit-advanced:focus + .control > label[for="mit-advanced"] {
+    outline: 1px dotted;
+    outline: -webkit-focus-ring-color auto 5px;
 }
 
 #mit-advanced:checked + .control .advanced-off,
@@ -124,7 +136,8 @@ form pre:not(:empty) {
 }
 
 .instructions input {
-    display: none;
+    position: absolute;
+    clip: rect(0px, 0px, 0px, 0px);
 }
 
 .instructions label {
@@ -134,7 +147,12 @@ form pre:not(:empty) {
     color: #090;
 }
 
-.instructions :checked + label {
+.instructions input:focus + label {
+    outline: 1px dotted;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+.instructions input:checked + label {
     background: #cfd;
     color: #000;
 }
