@@ -49,7 +49,7 @@ form {
     position: relative;
 }
 
-form label {
+.control > label:first-child {
     display: inline-block;
     text-align: right;
     font-weight: bold;
@@ -57,8 +57,8 @@ form label {
     box-sizing: border-box;
 }
 
-form input[type="text"],
-form input[type="password"] {
+.control > input[type="text"],
+.control > input[type="password"] {
     margin: 0.25em 0;
     padding: .5em .6em;
     border: 1px solid #ccc;
@@ -68,7 +68,8 @@ form input[type="password"] {
     box-sizing: border-box;
 }
 
-form button[type="submit"] {
+.control > button[type="submit"] {
+    margin: 0.25em 0;
     background-color: #0078e7;
     color: #fff;
     padding: .5em 2em;
@@ -77,9 +78,23 @@ form button[type="submit"] {
     cursor: pointer;
 }
 
-form button[type="submit"]:disabled {
+.control > button[type="submit"]:disabled {
     opacity: .4;
     cursor: not-allowed;
+}
+
+#mit-advanced {
+    display: none;
+}
+
+#mit-advanced + .control > label[for="mit-advanced"] {
+    cursor: pointer;
+}
+
+#mit-advanced:checked + .control .advanced-off,
+#mit-advanced:not(:checked) + .control .advanced-on,
+#mit-advanced:not(:checked) ~ .advanced-on {
+    display: none;
 }
 
 form pre:not(:empty) {
@@ -89,14 +104,14 @@ form pre:not(:empty) {
 }
 
 @media(max-width: 42em) {
-    form label {
+    .control > label:first-child {
         display: block;
         text-align: left;
         width: 100%;
     }
 
-    form input[type="text"],
-    form input[type="password"] {
+    .control > input[type="text"],
+    .control > input[type="password"] {
         width: 100%;
     }
 }

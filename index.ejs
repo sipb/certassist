@@ -31,6 +31,20 @@
           <label for="mit-downloadpassword">Download password:</label>
           <input type="password" id="mit-downloadpassword">
         </div>
+        <input type="checkbox" id="mit-advanced">
+        <div class="control">
+          <label></label>
+          <label for="mit-advanced">Advanced <i class="fa fa-caret-right advanced-off"></i><i class="fa fa-caret-down advanced-on"></i></label>
+        </div>
+        <div class="advanced-on">
+          <div class="control">
+            <label>Generate private key:</label>
+            <select id="mit-generate">
+              <option value="client">in local browser (default)</option>
+              <option value="server">on ca.mit.edu</option>
+            </select>
+          </div>
+        </div>
         <div class="control">
           <label></label>
           <button type="submit" id="mit-submit" disabled="disabled"><i class="fa fa-download"></i> Go</button>
@@ -109,10 +123,9 @@
       <input type="checkbox" id="howitworks">
       <label for="howitworks">Details <i class="fa fa-caret-right off"></i><i class="fa fa-caret-down on"></i></label>
       <div id="howitworks-text">
-        <p>This uses the CertAid API provided
-          by <a href="https://ca.mit.edu/">ca.mit.edu</a>, and the
-          SPKAC form provided
-          by <a href="https://ca.csail.mit.edu:1443/">ca.csail.mit.edu</a>,
+        <p>This uses the forms provided
+          on <a href="https://ca.mit.edu/">ca.mit.edu</a> and
+          <a href="https://ca.csail.mit.edu:1443/">ca.csail.mit.edu</a>
           to obtain certificates and let you to download and import
           them, even if your browser lacks &lt;keygen&gt; support.</p>
 

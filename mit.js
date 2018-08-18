@@ -1,12 +1,15 @@
 'use strict';
 
-import forge from 'node-forge';
+import forge, {asn1} from 'node-forge';
 import 'node-forge/lib/http';
 import xml2js from 'xml2js';
 
 import wsHttpsFetch from './wsHttpsFetch.js';
+import generateSpkac from './generateSpkac.js';
 import saveBlob from './saveBlob.js';
 import caStore from './addTrustStore.js';
+
+const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/mit`;
 
 function xmlParse(...args) {
     return new Promise((resolve, reject) => {
@@ -21,7 +24,7 @@ function xmlParse(...args) {
 
 async function apiCall(cmd) {
     const response = await wsHttpsFetch(
-        `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/mit`,
+        wsUrl,
         forge.http.createRequest({
             method: 'POST',
             path: '/ca/api',
@@ -40,14 +43,14 @@ async function apiCall(cmd) {
     return xmlParse(response.body);
 }
 
-async function downloadCert(options) {
+async function downloadCertServerKey(options) {
     options.onStatus('Opening session');
     const startupReply = await apiCall({
         operation: 'startup',
         sessiontype: 'xml',
         version: 2,
-        os: window.navigator.oscpu,
-        browser: window.navigator.userAgent,
+        os: 'Windows NT 10.0.14393.0',
+        browser: 'Firefox 60.0',
     });
     if (startupReply.error) {
         console.log('Session error:', startupReply);
@@ -93,12 +96,165 @@ async function downloadCert(options) {
     }
 }
 
+const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0';
+
+async function downloadCertClientKey(options) {
+    options.onStatus('Opening session');
+    const startResponse = await wsHttpsFetch(
+        wsUrl,
+        forge.http.createRequest({
+            method: 'GET',
+            path: '/ca/',
+            headers: {
+                'Connection': 'close',
+                'Host': 'ca.mit.edu',
+                'User-Agent': userAgent,
+            },
+        }),
+        caStore);
+    if (startResponse.code !== 200) {
+        console.log('Server error:', startResponse);
+        throw new Error(`Server error: ${startResponse.code} ${startResponse.message}`);
+    }
+    const [cookie] = startResponse.getCookies();
+
+    options.onStatus('Authenticating');
+    const loginResponse = await wsHttpsFetch(
+        wsUrl,
+        forge.http.createRequest({
+            method: 'POST',
+            path: '/ca/login',
+            headers: {
+                'Connection': 'close',
+                'Cookie': `${cookie.name}=${cookie.value}`,
+                'Host': 'ca.mit.edu',
+                'User-Agent': userAgent,
+            },
+            body: [
+                ['data', '1'],
+                ['login', options.login],
+                ['mitid', options.mitid],
+                ['password', options.password],
+                ['submit', 'Next+>>'],
+            ].map(p => p.map(x => encodeURIComponent(x)).join('=')).join('&')
+        }),
+        caStore);
+    if (loginResponse.code === 302 &&
+        loginResponse.getField('Location') === 'https://ca.mit.edu/ca/start/') {
+        console.log('Login error:', loginResponse);
+        throw new Error('Authentication error');
+    } else if (loginResponse.code === 302 &&
+        loginResponse.getField('Location') === 'https://ca.mit.edu/ca/force_cpw') {
+        console.log('Server error:', loginResponse);
+        throw new Error('You must change your Kerberos password before proceeding.');
+    } else if (loginResponse.code !== 302 ||
+        loginResponse.getField('Location') !== 'https://ca.mit.edu/ca/certgen') {
+        console.log('Server error:', loginResponse);
+        throw new Error(`Server error: ${loginResponse.code} ${loginResponse.message}`);
+    }
+
+    options.onStatus('Fetching challenge');
+    const formResponse = await wsHttpsFetch(
+        wsUrl,
+        forge.http.createRequest({
+            method: 'GET',
+            path: '/ca/certgen',
+            headers: {
+                'Connection': 'close',
+                'Cookie': `${cookie.name}=${cookie.value}`,
+                'Host': 'ca.mit.edu',
+                'User-Agent': userAgent,
+            },
+        }),
+        caStore);
+    if (formResponse.code !== 200) {
+        console.log('Server error:', formResponse);
+        throw new Error(`Server error: ${formResponse.code} ${formResponse.message}`)
+    }
+
+    const doc = new DOMParser().parseFromString(
+        formResponse.body,
+        formResponse.getField('Content-Type').match(/^[^;]*/)[0]);
+    const [userkey] = doc.getElementsByName('userkey');
+    const challenge = userkey.getAttribute('challenge');
+    const life = doc.getElementById('life').value;
+
+    options.onStatus('Generating key pair');
+    const keyPair = await new Promise((resolve, reject) =>
+        forge.pki.rsa.generateKeyPair({bits: 2048}, (err, keyPair) =>
+            err ? reject(err) : resolve(keyPair)));
+    const spkac = generateSpkac(keyPair, challenge);
+
+    options.onStatus('Requesting certificate');
+    const spkacResponse0 = await wsHttpsFetch(
+        wsUrl,
+        forge.http.createRequest({
+            method: 'POST',
+            path: '/ca/handlemoz',
+            headers: {
+                'Host': 'ca.mit.edu',
+                'Cookie': `${cookie.name}=${cookie.value}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Connection': 'close',
+            },
+            body: [
+                ['data', '1'],
+                ['life', life],
+                ['Submit', 'Next+>>'],
+                ['userkey', spkac],
+            ].map(p => p.map(x => encodeURIComponent(x)).join('=')).join('&')
+        }),
+        caStore);
+    if (spkacResponse0.code !== 302 ||
+        spkacResponse0.getField('Location') !== 'https://ca.mit.edu/ca/mozcert/0') {
+        console.log('Server error:', spkacResponse0);
+        throw new Error(`Server error: ${spkacResponse0.code} ${spkacResponse0.message}`);
+    }
+
+    options.onStatus('Downloading certificate');
+    const spkacResponse2 = await wsHttpsFetch(
+        wsUrl,
+        forge.http.createRequest({
+            method: 'GET',
+            path: '/ca/mozcert/2',
+            headers: {
+                'Host': 'ca.mit.edu',
+                'Cookie': `${cookie.name}=${cookie.value}`,
+                'Connection': 'close',
+            },
+        }),
+        caStore);
+    if (spkacResponse2.code !== 200) {
+        console.log('Server error:', spkacResponse2);
+        throw new Error(`Server error: ${spkacResponse2.code} ${spkacResponse2.message}`);
+    }
+
+    const a1 = asn1.fromDer(spkacResponse2.body);
+    const cert = forge.pki.certificateFromAsn1(a1);
+    const p12 = forge.pkcs12.toPkcs12Asn1(keyPair.privateKey, [cert], options.downloadpassword, {
+        algorithm: '3des',
+        friendlyName: `${options.login}'s MIT Certificate`,
+    });
+    return forge.util.binary.raw.decode(asn1.toDer(p12).getBytes());
+}
+
+function downloadCert(options) {
+    if (options.generate === 'client') {
+        return downloadCertClientKey(options);
+    } else if (options.generate === 'server') {
+        return downloadCertServerKey(options);
+    } else {
+        throw new Error('Unexpected value for generate');
+    }
+}
+
 let working = false;
 const submitElement = document.getElementById('mit-submit');
 const loginElement = document.getElementById('mit-login');
 const passwordElement = document.getElementById('mit-password');
 const mitIdElement = document.getElementById('mit-id');
 const downloadPasswordElement = document.getElementById('mit-downloadpassword');
+const generateElement = document.getElementById('mit-generate');
 const statusElement = document.getElementById('mit-status');
 
 function invalid() {
@@ -133,6 +289,7 @@ async function submit(event) {
             expiration: '2999-01-01T00:00:00',
             force: '0',
             alwaysreuse: '1',
+            generate: generateElement.value,
             onStatus: status => {
                 statusElement.textContent += status + '\n'
             },

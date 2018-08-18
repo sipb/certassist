@@ -4,6 +4,7 @@ import forge, {asn1} from 'node-forge';
 import 'node-forge/lib/http';
 
 import wsHttpsFetch from './wsHttpsFetch.js';
+import generateSpkac from './generateSpkac.js';
 import saveBlob from './saveBlob.js';
 import caStore from './addTrustStore.js';
 
@@ -40,30 +41,11 @@ async function downloadCert(options) {
     const keyPair = await new Promise((resolve, reject) =>
         forge.pki.rsa.generateKeyPair({bits: 2048}, (err, keyPair) =>
             err ? reject(err) : resolve(keyPair)));
-
-    const pkac = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-        forge.pki.publicKeyToAsn1(keyPair.publicKey),
-        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.IA5STRING, false, challenge),
-    ]);
-    const md = forge.md.md5.create();
-    md.update(asn1.toDer(pkac).getBytes());
-    const signature = keyPair.privateKey.sign(md);
-    const spkac = forge.util.encode64(asn1.toDer(asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-        pkac,
-        asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
-            asn1.create(
-                asn1.Class.UNIVERSAL, asn1.Type.OID, false,
-                asn1.oidToDer(forge.pki.oids['md5WithRSAEncryption']).getBytes()),
-            asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, ''),
-        ]),
-        asn1.create(
-            asn1.Class.UNIVERSAL, asn1.Type.BITSTRING, false,
-            String.fromCharCode(0x00) + signature),
-    ])).getBytes());
+    const spkac = generateSpkac(keyPair, challenge)
 
     options.onStatus('Downloading certificate');
     const spkacResponse = await wsHttpsFetch(
-        `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/csail`,
+        wsUrl,
         forge.http.createRequest({
             method: 'POST',
             path: '/request',
