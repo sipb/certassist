@@ -277,6 +277,7 @@ async function submit(event) {
     passwordElement.disabled = true;
     mitIdElement.disabled = true;
     downloadPasswordElement.disabled = true;
+    generateElement.disabled = true;
     statusElement.textContent = '';
 
     const login = loginElement.value;
@@ -307,6 +308,7 @@ async function submit(event) {
         passwordElement.disabled = false;
         mitIdElement.disabled = false;
         downloadPasswordElement.disabled = false;
+        generateElement.disabled = false;
         validate();
     }
 }
