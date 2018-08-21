@@ -145,6 +145,7 @@ form pre:not(:empty) {
     padding: .2em .5em;
     border-radius: .3em;
     color: #090;
+    white-space: nowrap;
 }
 
 .instructions input:focus + label {
