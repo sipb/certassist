@@ -208,3 +208,8 @@ form pre:not(:empty) {
 #footer img, #footer i {
     vertical-align: middle;
 }
+
+#footer .version, #footer .version a {
+    color: #999;
+    text-decoration: none;
+}

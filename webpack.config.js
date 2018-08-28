@@ -1,6 +1,12 @@
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
+const webpack = require('webpack');
+
+const gitRevisionPlugin = new GitRevisionPlugin({
+    versionCommand: 'describe --always --dirty',
+});
 
 module.exports = {
     entry: './main.js',
@@ -15,6 +21,10 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: 'index.ejs'
+        }),
+        new webpack.DefinePlugin({
+            'VERSION': JSON.stringify(gitRevisionPlugin.version()),
+            'COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash()),
         }),
     ],
     module: {
