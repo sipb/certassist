@@ -16,8 +16,8 @@
     "watch": "webpack --mode=development --debug --output-pathinfo --watch"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.3.0",
     "babel-polyfill": "^6.26.0",
-    "font-awesome": "^4.7.0",
     "node-forge": "^0.7.6",
     "xml2js": "^0.4.17"
   },
