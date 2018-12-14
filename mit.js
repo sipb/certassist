@@ -1,5 +1,6 @@
 'use strict';
 
+import Duo from '@duosecurity/duo_web/js/Duo-Web-v2';
 import forge, {asn1} from 'node-forge';
 import 'node-forge/lib/http';
 import xml2js from 'xml2js';
@@ -98,6 +99,19 @@ async function downloadCertServerKey(options) {
 
 const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0';
 
+function parseDuoDocument(doc) {
+    const iframe = doc.getElementById('duo_iframe');
+    if (iframe === null ||
+        iframe.previousElementSibling === null)
+        return null;
+    const m = iframe.previousElementSibling.text.match(
+        /^\s*Duo\.init\(\{\s*'host':\s*"([^\\"]*)",\s*'sig_request':\s*"([^\\"]*)",\s*'post_action':\s*"([^\\"]*)"\s*\}\);\s*$/);
+    if (m === null)
+        return null;
+    const [, host, sig_request, post_action] = m;
+    return {host, sig_request, post_action};
+}
+
 async function downloadCertClientKey(options) {
     options.onStatus('Opening session');
     const startResponse = await wsHttpsFetch(
@@ -119,13 +133,14 @@ async function downloadCertClientKey(options) {
     const [cookie] = startResponse.getCookies();
 
     options.onStatus('Authenticating');
-    const loginResponse = await wsHttpsFetch(
+    let loginResponse = await wsHttpsFetch(
         wsUrl,
         forge.http.createRequest({
             method: 'POST',
             path: '/ca/login',
             headers: {
                 'Connection': 'close',
+                'Content-Type': 'application/x-www-form-urlencoded',
                 'Cookie': `${cookie.name}=${cookie.value}`,
                 'Host': 'ca.mit.edu',
                 'User-Agent': userAgent,
@@ -133,12 +148,67 @@ async function downloadCertClientKey(options) {
             body: [
                 ['data', '1'],
                 ['login', options.login],
-                ['mitid', options.mitid],
                 ['password', options.password],
                 ['submit', 'Next+>>'],
             ].map(p => p.map(x => encodeURIComponent(x)).join('=')).join('&')
         }),
         caStore);
+
+    if (loginResponse.code === 200) {
+        const loginDoc = new DOMParser().parseFromString(
+            loginResponse.body,
+            loginResponse.getField('Content-Type').match(/^[^;]*/)[0]);
+        const duoParams = parseDuoDocument(loginDoc);
+        if (duoParams === null) {
+            console.log('Server error:', loginResponse);
+            throw new Error('Server error: Unrecognized response');
+        }
+
+        options.onStatus('Starting Duo authentication');
+        let duoResponse;
+        try {
+            duoControlElement.hidden = false;
+            duoResponse = await new Promise((resolve, reject) => {
+                function cancel(event) {
+                    event.preventDefault();
+                    duoCancelElement.removeEventListener('click', cancel);
+                    reject(new Error('Duo authentication cancelled'));
+                }
+
+                duoCancelElement.addEventListener('click', cancel);
+
+                Duo.init(Object.assign({}, duoParams, {
+                    submit_callback: duoResponse => {
+                        duoCancelElement.removeEventListener('click', cancel);
+                        resolve(duoResponse);
+                    },
+                }));
+            });
+        } finally {
+            duoControlElement.hidden = true;
+            duo_iframe.src = 'about:blank';
+        }
+
+        options.onStatus('Finishing Duo authentication');
+        loginResponse = await wsHttpsFetch(
+            wsUrl,
+            forge.http.createRequest({
+                method: duoResponse.method,
+                path: duoParams.post_action,
+                headers: {
+                    'Connection': 'close',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Cookie': `${cookie.name}=${cookie.value}`,
+                    'Host': 'ca.mit.edu',
+                    'User-Agent': userAgent,
+                },
+                body: [...duoResponse.elements]
+                    .map(e => [e.name, e.value])
+                    .map(p => p.map(x => encodeURIComponent(x)).join('=')).join('&')
+            }),
+            caStore);
+    }
+
     if (loginResponse.code === 302 &&
         loginResponse.getField('Location') === 'https://ca.mit.edu/ca/start/') {
         console.log('Login error:', loginResponse);
@@ -192,10 +262,11 @@ async function downloadCertClientKey(options) {
             method: 'POST',
             path: '/ca/handlemoz',
             headers: {
-                'Host': 'ca.mit.edu',
-                'Cookie': `${cookie.name}=${cookie.value}`,
-                'Content-Type': 'application/x-www-form-urlencoded',
                 'Connection': 'close',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cookie': `${cookie.name}=${cookie.value}`,
+                'Host': 'ca.mit.edu',
+                'User-Agent': userAgent,
             },
             body: [
                 ['data', '1'],
@@ -218,9 +289,10 @@ async function downloadCertClientKey(options) {
             method: 'GET',
             path: '/ca/mozcert/2',
             headers: {
-                'Host': 'ca.mit.edu',
-                'Cookie': `${cookie.name}=${cookie.value}`,
                 'Connection': 'close',
+                'Cookie': `${cookie.name}=${cookie.value}`,
+                'Host': 'ca.mit.edu',
+                'User-Agent': userAgent,
             },
         }),
         caStore);
@@ -252,7 +324,11 @@ let working = false;
 const submitElement = document.getElementById('mit-submit');
 const loginElement = document.getElementById('mit-login');
 const passwordElement = document.getElementById('mit-password');
+const mitIdControlElement = document.getElementById('mit-id-control');
 const mitIdElement = document.getElementById('mit-id');
+const duoControlElement = document.getElementById('mit-duo-control');
+const duoIframeElement = document.getElementById('duo_iframe');
+const duoCancelElement = document.getElementById('mit-duo-cancel');
 const downloadPasswordElement = document.getElementById('mit-downloadpassword');
 const generateElement = document.getElementById('mit-generate');
 const statusElement = document.getElementById('mit-status');
@@ -260,11 +336,12 @@ const statusElement = document.getElementById('mit-status');
 function invalid() {
     return working || !loginElement.value ||
         !passwordElement.value ||
-        !mitIdElement.value.match(/^9\d{8}$/) ||
+        (generateElement.value === 'server' && !mitIdElement.value.match(/^9\d{8}$/)) ||
         !downloadPasswordElement.value;
 }
 
 function validate(event) {
+    mitIdControlElement.hidden = generateElement.value !== 'server';
     submitElement.disabled = invalid();
 }
 
@@ -321,6 +398,7 @@ mitIdElement.addEventListener('change', validate);
 mitIdElement.addEventListener('input', validate);
 downloadPasswordElement.addEventListener('change', validate);
 downloadPasswordElement.addEventListener('input', validate);
+generateElement.addEventListener('change', validate);
 document.getElementById('mit-form').addEventListener('submit', submit);
 
 loginElement.focus();

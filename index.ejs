@@ -23,9 +23,19 @@
           <label for="mit-password">Kerberos password:</label>
           <input type="password" id="mit-password">
         </div>
-        <div class="control">
+        <div class="control" id="mit-id-control" hidden>
           <label for="mit-id">MIT ID number:</label>
           <input type="text" id="mit-id">
+        </div>
+        <div id="mit-duo-control" hidden>
+          <div class="control">
+            <label>Duo authentication:</label>
+            <iframe id="duo_iframe"></iframe>
+          </div>
+          <div class="control">
+            <label></label>
+            <a id="mit-duo-cancel">Cancel</a>
+          </div>
         </div>
         <div class="control">
           <label for="mit-downloadpassword">Download password:</label>

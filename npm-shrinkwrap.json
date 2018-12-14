@@ -4,6 +4,11 @@
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
+    "@duosecurity/duo_web": {
+      "version": "1.0.4",
+      "resolved": "https://registry.npmjs.org/@duosecurity/duo_web/-/duo_web-1.0.4.tgz",
+      "integrity": "sha512-rBV9j7T8tT55qYH14K8piqZoxGz/wJpPU9j4Rk1wD0ZbR+J2EzTH1r9CDxGOA5OsC/DuXGAegyOW4sLPs++96w=="
+    },
     "@fortawesome/fontawesome-free": {
       "version": "5.3.0",
       "resolved": "https://registry.npmjs.org/@fortawesome/fontawesome-free/-/fontawesome-free-5.3.0.tgz",
