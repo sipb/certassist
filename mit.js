@@ -3,7 +3,6 @@
 import Duo from '@duosecurity/duo_web/js/Duo-Web-v2';
 import forge, {asn1} from 'node-forge';
 import 'node-forge/lib/http';
-import xml2js from 'xml2js';
 
 import wsHttpsFetch from './wsHttpsFetch.js';
 import generateSpkac from './generateSpkac.js';
@@ -12,15 +11,15 @@ import caStore from './addTrustStore.js';
 
 const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/mit`;
 
-function xmlParse(...args) {
-    return new Promise((resolve, reject) => {
-        xml2js.parseString(...args, (err, result) => {
-            if (err)
-                reject(err);
-            else
-                resolve(result);
-        });
-    });
+function xmlToObject(node) {
+    if (node.children.length) {
+        const obj = {};
+        for (const child of node.children)
+            obj[child.tagName] = xmlToObject(child);
+        return obj;
+    } else {
+        return node.textContent;
+    }
 }
 
 async function apiCall(cmd) {
@@ -41,7 +40,7 @@ async function apiCall(cmd) {
         console.log('Server error:', response.code, response.message);
         throw new Error('Server error: ' + response.code + ' ' + response.message);
     }
-    return xmlParse(response.body);
+    return xmlToObject(new DOMParser().parseFromString(response.body, 'text/xml'));
 }
 
 async function downloadCertServerKey(options) {
@@ -55,7 +54,7 @@ async function downloadCertServerKey(options) {
     });
     if (startupReply.error) {
         console.log('Session error:', startupReply);
-        throw new Error('Session error: ' + startupReply.error.text[0]);
+        throw new Error('Session error: ' + startupReply.error.text);
     }
     const sessionid = startupReply.startupresponse.sessionid;
 
@@ -70,7 +69,7 @@ async function downloadCertServerKey(options) {
         });
         if (authenticateReply.error) {
             console.log('Authentication error:', authenticateReply);
-            throw new Error('Authentication error: ' + authenticateReply.error.text[0]);
+            throw new Error('Authentication error: ' + authenticateReply.error.text);
         }
 
         options.onStatus('Downloading certificate');
@@ -84,10 +83,10 @@ async function downloadCertServerKey(options) {
         });
         if (downloadReply.error) {
             console.log('Certificate error:', downloadReply);
-            throw new Error('Certificate error: ' + downloadReply.error.text[0]);
+            throw new Error('Certificate error: ' + downloadReply.error.text);
         }
 
-        return new Buffer(downloadReply.downloadcertresponse.pkcs12[0], 'base64');
+        return new Buffer(downloadReply.downloadcertresponse.pkcs12, 'base64');
     } finally {
         options.onStatus('Closing session');
         await apiCall({
