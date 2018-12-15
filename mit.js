@@ -166,7 +166,9 @@ async function downloadCertClientKey(options) {
 
         options.onStatus('Starting Duo authentication');
         let duoResponse;
+        const iframe = document.createElement('iframe');
         try {
+            duoIframeContainerElement.appendChild(iframe);
             duoControlElement.hidden = false;
             duoResponse = await new Promise((resolve, reject) => {
                 function cancel(event) {
@@ -178,6 +180,7 @@ async function downloadCertClientKey(options) {
                 duoCancelElement.addEventListener('click', cancel);
 
                 Duo.init(Object.assign({}, duoParams, {
+                    iframe,
                     submit_callback: duoResponse => {
                         duoCancelElement.removeEventListener('click', cancel);
                         resolve(duoResponse);
@@ -186,7 +189,7 @@ async function downloadCertClientKey(options) {
             });
         } finally {
             duoControlElement.hidden = true;
-            duo_iframe.src = 'about:blank';
+            duoIframeContainerElement.removeChild(iframe);
         }
 
         options.onStatus('Finishing Duo authentication');
@@ -327,7 +330,7 @@ const passwordElement = document.getElementById('mit-password');
 const mitIdControlElement = document.getElementById('mit-id-control');
 const mitIdElement = document.getElementById('mit-id');
 const duoControlElement = document.getElementById('mit-duo-control');
-const duoIframeElement = document.getElementById('duo_iframe');
+const duoIframeContainerElement = document.getElementById('mit-duo-iframe-container');
 const duoCancelElement = document.getElementById('mit-duo-cancel');
 const downloadPasswordElement = document.getElementById('mit-downloadpassword');
 const generateElement = document.getElementById('mit-generate');

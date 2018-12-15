@@ -89,7 +89,7 @@ form {
     cursor: not-allowed;
 }
 
-#duo_iframe {
+#mit-duo-iframe-container iframe {
     margin: 0.25em 0;
     width: 74%;
     height: 330px;
@@ -142,7 +142,7 @@ form pre:not(:empty) {
 
     .control > input[type="text"],
     .control > input[type="password"],
-    #duo_iframe {
+    #mit-duo-iframe-container iframe {
         width: 100%;
     }
 }
