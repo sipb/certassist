@@ -51,5 +51,6 @@ module.exports = {
             },
         }]
     },
+    node: false,
     devtool: 'source-map',
 };

@@ -86,7 +86,7 @@ async function downloadCertServerKey(options) {
             throw new Error('Certificate error: ' + downloadReply.error.text);
         }
 
-        return new Buffer(downloadReply.downloadcertresponse.pkcs12, 'base64');
+        return forge.util.binary.base64.decode(downloadReply.downloadcertresponse.pkcs12);
     } finally {
         options.onStatus('Closing session');
         await apiCall({
