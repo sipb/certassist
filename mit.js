@@ -403,4 +403,5 @@ downloadPasswordElement.addEventListener('input', validate);
 generateElement.addEventListener('change', validate);
 document.getElementById('mit-form').addEventListener('submit', submit);
 
+validate();
 loginElement.focus();

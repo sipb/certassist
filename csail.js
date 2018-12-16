@@ -154,3 +154,5 @@ passwordElement.addEventListener('input', validate);
 downloadPasswordElement.addEventListener('change', validate);
 downloadPasswordElement.addEventListener('input', validate);
 document.getElementById('csail-form').addEventListener('submit', submit);
+
+validate();
