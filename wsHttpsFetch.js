@@ -1,9 +1,16 @@
 import forge from 'node-forge';
 import 'node-forge/lib/http';
 
+const sessionCaches = new Map();
+
 async function wsHttpsFetch(wsUrl, request, caStore) {
     const ws = new WebSocket(wsUrl, ['binary', 'base64']);
     ws.binaryType = 'arraybuffer';
+    let sessionCache = sessionCaches.get(wsUrl);
+    if (sessionCache === undefined) {
+        sessionCache = forge.tls.createSessionCache({}, 1)
+        sessionCaches.set(wsUrl, sessionCache);
+    }
     let done = false;
     const buffer = forge.util.createBuffer();
     const response = forge.http.createResponse();
@@ -11,7 +18,8 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
         const [_, hostname] = request.getField('Host').match(/^([^:]*)(?::\d+)?$/);
         const tls = forge.tls.createConnection({
             server: false,
-            caStore: caStore,
+            caStore,
+            sessionCache,
             virtualHost: hostname,
             verify: (connection, verified, depth, certs) => {
                 if (depth === 0) {
