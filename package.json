@@ -6,7 +6,6 @@
   "bugs": "https://github.com/sipb/certassist/issues",
   "license": "MIT",
   "author": "Anders Kaseorg",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/sipb/certassist.git"
