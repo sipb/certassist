@@ -104,8 +104,12 @@ async function downloadCertServerKey(options) {
   }
 }
 
-const userAgent =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0";
+const caHeaders = {
+  Connection: "close",
+  Host: "ca.mit.edu",
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0",
+};
 
 function parseDuoDocument(doc) {
   const iframe = doc.getElementById("duo_iframe");
@@ -125,11 +129,7 @@ async function downloadCertClientKey(options) {
     forge.http.createRequest({
       method: "GET",
       path: "/ca/",
-      headers: {
-        Connection: "close",
-        Host: "ca.mit.edu",
-        "User-Agent": userAgent,
-      },
+      headers: caHeaders,
     }),
     caStore
   );
@@ -139,7 +139,13 @@ async function downloadCertClientKey(options) {
       `Server error: ${startResponse.code} ${startResponse.message}`
     );
   }
-  const [cookie] = startResponse.getCookies();
+  const headers = {
+    ...caHeaders,
+    Cookie: startResponse
+      .getCookies()
+      .map(({ name, value }) => `${name}=${value}`)
+      .join("; "),
+  };
 
   options.onStatus("Authenticating");
   let loginResponse = await wsHttpsFetch(
@@ -148,11 +154,8 @@ async function downloadCertClientKey(options) {
       method: "POST",
       path: "/ca/login",
       headers: {
-        Connection: "close",
+        ...headers,
         "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: `${cookie.name}=${cookie.value}`,
-        Host: "ca.mit.edu",
-        "User-Agent": userAgent,
       },
       body: [
         ["data", "1"],
@@ -214,11 +217,8 @@ async function downloadCertClientKey(options) {
         method: duoResponse.method,
         path: duoParams.post_action,
         headers: {
-          Connection: "close",
+          ...headers,
           "Content-Type": "application/x-www-form-urlencoded",
-          Cookie: `${cookie.name}=${cookie.value}`,
-          Host: "ca.mit.edu",
-          "User-Agent": userAgent,
         },
         body: [...duoResponse.elements]
           .map(e => [e.name, e.value])
@@ -259,12 +259,7 @@ async function downloadCertClientKey(options) {
     forge.http.createRequest({
       method: "GET",
       path: "/ca/certgen",
-      headers: {
-        Connection: "close",
-        Cookie: `${cookie.name}=${cookie.value}`,
-        Host: "ca.mit.edu",
-        "User-Agent": userAgent,
-      },
+      headers,
     }),
     caStore
   );
@@ -298,11 +293,8 @@ async function downloadCertClientKey(options) {
       method: "POST",
       path: "/ca/handlemoz",
       headers: {
-        Connection: "close",
+        ...headers,
         "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: `${cookie.name}=${cookie.value}`,
-        Host: "ca.mit.edu",
-        "User-Agent": userAgent,
       },
       body: [
         ["data", "1"],
@@ -331,12 +323,7 @@ async function downloadCertClientKey(options) {
     forge.http.createRequest({
       method: "GET",
       path: "/ca/mozcert/2",
-      headers: {
-        Connection: "close",
-        Cookie: `${cookie.name}=${cookie.value}`,
-        Host: "ca.mit.edu",
-        "User-Agent": userAgent,
-      },
+      headers,
     }),
     caStore
   );
