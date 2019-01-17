@@ -134,7 +134,7 @@ function invalid() {
   );
 }
 
-function validate(event) {
+function validate(_event) {
   submitElement.disabled = invalid();
 }
 

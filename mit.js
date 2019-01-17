@@ -397,7 +397,7 @@ function invalid() {
   );
 }
 
-function validate(event) {
+function validate(_event) {
   mitIdControlElement.hidden = generateElement.value !== "server";
   submitElement.disabled = invalid();
 }

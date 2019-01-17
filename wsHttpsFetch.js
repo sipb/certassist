@@ -15,7 +15,7 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
   const buffer = forge.util.createBuffer();
   const response = forge.http.createResponse();
   return new Promise((resolve, reject) => {
-    const [_, hostname] = request.getField("Host").match(/^([^:]*)(?::\d+)?$/);
+    const [, hostname] = request.getField("Host").match(/^([^:]*)(?::\d+)?$/);
     const tls = forge.tls.createConnection({
       server: false,
       caStore,
@@ -84,11 +84,11 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
         }
       },
     });
-    ws.addEventListener("open", event => {
+    ws.addEventListener("open", _event => {
       console.log("Opened", ws.protocol, "WebSocket");
       tls.handshake();
     });
-    ws.addEventListener("close", event => {
+    ws.addEventListener("close", _event => {
       console.log("Closed WebSocket");
       tls.close();
     });
