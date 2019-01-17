@@ -122,9 +122,8 @@ function parseDuoDocument(doc) {
   return { host, sig_request, post_action };
 }
 
-async function downloadCertClientKey(options) {
-  options.onStatus("Opening session");
-  const startResponse = await wsHttpsFetch(
+async function start() {
+  const response = await wsHttpsFetch(
     wsUrl,
     forge.http.createRequest({
       method: "GET",
@@ -133,12 +132,16 @@ async function downloadCertClientKey(options) {
     }),
     caStore
   );
-  if (startResponse.code !== 200) {
-    console.log("Server error:", startResponse);
-    throw new Error(
-      `Server error: ${startResponse.code} ${startResponse.message}`
-    );
+  if (response.code !== 200) {
+    console.log("Server error:", response);
+    throw new Error(`Server error: ${response.code} ${response.message}`);
   }
+  return response;
+}
+
+async function downloadCertClientKey(options) {
+  options.onStatus("Opening session");
+  const startResponse = await start();
   const headers = {
     ...caHeaders,
     Cookie: startResponse
@@ -357,6 +360,10 @@ function downloadCert(options) {
     throw new Error("Unexpected value for generate");
   }
 }
+
+window.certAssistMitPing = async function certAssistMitPing() {
+  await start();
+};
 
 let working = false;
 const submitElement = document.getElementById("mit-submit");
