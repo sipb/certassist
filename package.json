@@ -42,5 +42,8 @@
         }
       ]
     ]
+  },
+  "prettier": {
+    "trailingComma": "es5"
   }
 }
