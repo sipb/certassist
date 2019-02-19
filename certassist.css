@@ -192,7 +192,8 @@ form pre:not(:empty) {
 #browser-chrome:checked ~ .platform-android,
 #browser-firefox:checked ~ .platform-windows,
 #browser-firefox:checked ~ .platform-mac,
-#browser-firefox:checked ~ .platform-linux {
+#browser-firefox:checked ~ .platform-linux,
+#browser-firefox:checked ~ .platform-android {
     display: inline;
 }
 
@@ -204,6 +205,7 @@ form pre:not(:empty) {
 #browser-firefox:checked ~ #platform-windows:checked ~ .instructions-firefox-windows,
 #browser-firefox:checked ~ #platform-mac:checked ~ .instructions-firefox-mac,
 #browser-firefox:checked ~ #platform-linux:checked ~ .instructions-firefox-linux,
+#browser-firefox:checked ~ #platform-android:checked ~ .instructions-firefox-android,
 #browser-safari:checked ~ .instructions-safari {
     display: block;
 }
