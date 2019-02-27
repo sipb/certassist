@@ -152,7 +152,7 @@ async function start() {
   return response;
 }
 
-async function downloadCertClientKey(options) {
+async function scrapeCertDer(options) {
   options.onStatus("Opening session");
   const startResponse = await start();
   const headers = {
@@ -294,13 +294,7 @@ async function downloadCertClientKey(options) {
   const challenge = userkey.getAttribute("challenge");
   const life = doc.getElementById("life").value;
 
-  options.onStatus("Generating key pair");
-  const keyPair = await new Promise((resolve, reject) =>
-    forge.pki.rsa.generateKeyPair({ bits: 2048 }, (err, keyPair) =>
-      err ? reject(err) : resolve(keyPair)
-    )
-  );
-  const spkac = generateSpkac(keyPair, challenge);
+  const spkac = await options.getSpkac(challenge);
 
   options.onStatus("Requesting certificate");
   const spkacResponse0 = await wsHttpsFetch(
@@ -350,11 +344,26 @@ async function downloadCertClientKey(options) {
     );
   }
 
-  const a1 = asn1.fromDer(spkacResponse2.body);
-  const cert = forge.pki.certificateFromAsn1(a1);
+  return spkacResponse2.body;
+}
+
+async function downloadCertClientKey(options) {
+  let keyPair;
+  const der = await scrapeCertDer({
+    ...options,
+    getSpkac: async challenge => {
+      options.onStatus("Generating key pair");
+      keyPair = await new Promise((resolve, reject) =>
+        forge.pki.rsa.generateKeyPair({ bits: 2048 }, (err, keyPair) =>
+          err ? reject(err) : resolve(keyPair)
+        )
+      );
+      return generateSpkac(keyPair, challenge);
+    },
+  });
   const p12 = forge.pkcs12.toPkcs12Asn1(
     keyPair.privateKey,
-    [cert],
+    [forge.pki.certificateFromAsn1(asn1.fromDer(der))],
     options.downloadpassword,
     {
       algorithm: "3des",
