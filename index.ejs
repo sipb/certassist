@@ -36,9 +36,40 @@
             <a id="mit-duo-cancel">Cancel</a>
           </div>
         </div>
-        <div class="control">
+        <div class="control" id="mit-downloadpassword-control">
           <label for="mit-downloadpassword">Download password:</label>
           <input type="password" id="mit-downloadpassword">
+        </div>
+        <div id="mit-spkac-control" hidden>
+          <div class="control">
+            <label>SPKAC challenge:</label>
+            <input type="text" id="mit-spkac-challenge" value="" readonly>
+          </div>
+          <div class="control">
+            <label></label> Generate a private key:
+          </div>
+          <div class="control">
+            <label></label>
+            <code>openssl genrsa -out privkey.pem 2048</code>
+          </div>
+          <div class="control">
+            <label></label> Then paste the output of the following
+            command below:
+          </div>
+          <div class="control">
+            <label></label>
+            <code>openssl spkac -key privkey.pem
+              -challenge <span id="mit-spkac-challenge-sh">''</span></code>
+          </div>
+          <div class="control">
+            <label for="mit-spkac">SPKAC:</label>
+            <input type="text" id="mit-spkac">
+          </div>
+          <div class="control">
+            <label></label>
+            <a id="mit-spkac-submit">Submit</a>
+            <a id="mit-spkac-cancel">Cancel</a>
+          </div>
         </div>
         <input type="checkbox" id="mit-advanced">
         <div class="control">
@@ -51,6 +82,7 @@
             <select id="mit-generate">
               <option value="client">in local browser (default)</option>
               <option value="server">on ca.mit.edu</option>
+              <option value="manual">manually offline</option>
             </select>
           </div>
         </div>

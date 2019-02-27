@@ -8,6 +8,13 @@ body {
     padding: 0 1.5em;
 }
 
+code {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding: .15em;
+    border-radius: .3em;
+}
+
 .tabs > input[type="radio"] {
     position: absolute;
     clip: rect(0px, 0px, 0px, 0px);
@@ -97,14 +104,24 @@ form {
     border-style: none;
 }
 
-#mit-duo-cancel {
+#mit-duo-cancel,
+#mit-spkac-submit,
+#mit-spkac-cancel {
     line-height: 3em;
-    background-color: #6c757d;
     color: #fff;
     padding: .5em 2em;
     border: transparent;
     border-radius: .3em;
     cursor: pointer;
+}
+
+#mit-spkac-submit {
+    background-color: #0078e7;
+}
+
+#mit-duo-cancel,
+#mit-spkac-cancel {
+    background-color: #6c757d;
 }
 
 #mit-advanced {

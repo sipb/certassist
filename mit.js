@@ -376,11 +376,61 @@ async function downloadCertClientKey(options) {
   );
 }
 
+async function downloadCertManual(options) {
+  const der = await scrapeCertDer({
+    ...options,
+    getSpkac: async challenge => {
+      spkacChallengeElement.value = challenge;
+      spkacChallengeShElement.textContent =
+        "'" + challenge.replace("'", "'\\''") + "'";
+      try {
+        spkacControlElement.hidden = false;
+        options.onStatus("Awaiting manual SPKAC generation");
+        return await new Promise((resolve, reject) => {
+          function submit(event) {
+            event.preventDefault();
+            spkacSubmitElement.removeEventListener("click", submit);
+            spkacCancelElement.removeEventListener("click", cancel);
+            let spkac = spkacElement.value;
+            if (spkac.startsWith("SPKAC=")) {
+              spkac = spkac.slice("SPKAC=".length);
+            }
+            resolve(spkac);
+          }
+
+          function cancel(event) {
+            event.preventDefault();
+            spkacSubmitElement.removeEventListener("click", submit);
+            spkacCancelElement.removeEventListener("click", cancel);
+            reject(new Error("Manual SPKAC generation cancelled"));
+          }
+
+          spkacSubmitElement.addEventListener("click", submit);
+          spkacCancelElement.addEventListener("click", cancel);
+        });
+      } finally {
+        spkacControlElement.hidden = true;
+        spkacElement.value = "";
+      }
+    },
+  });
+
+  options.onStatus("Certificate ready");
+  saveBlob(
+    new Blob([forge.util.binary.raw.decode(der)], {
+      type: "application/x-x509-user-cert",
+    }),
+    options.login + "-mit-cert.crt"
+  );
+}
+
 function downloadCert(options) {
   if (options.generate === "client") {
     return downloadCertClientKey(options);
   } else if (options.generate === "server") {
     return downloadCertServerKey(options);
+  } else if (options.generate === "manual") {
+    return downloadCertManual(options);
   } else {
     throw new Error("Unexpected value for generate");
   }
@@ -401,7 +451,18 @@ const duoIframeContainerElement = document.getElementById(
   "mit-duo-iframe-container"
 );
 const duoCancelElement = document.getElementById("mit-duo-cancel");
+const downloadPasswordControlElement = document.getElementById(
+  "mit-downloadpassword-control"
+);
 const downloadPasswordElement = document.getElementById("mit-downloadpassword");
+const spkacControlElement = document.getElementById("mit-spkac-control");
+const spkacChallengeElement = document.getElementById("mit-spkac-challenge");
+const spkacChallengeShElement = document.getElementById(
+  "mit-spkac-challenge-sh"
+);
+const spkacElement = document.getElementById("mit-spkac");
+const spkacSubmitElement = document.getElementById("mit-spkac-submit");
+const spkacCancelElement = document.getElementById("mit-spkac-cancel");
 const generateElement = document.getElementById("mit-generate");
 const statusElement = document.getElementById("mit-status");
 
@@ -412,12 +473,13 @@ function invalid() {
     !passwordElement.value ||
     (generateElement.value === "server" &&
       !mitIdElement.value.match(/^9\d{8}$/)) ||
-    !downloadPasswordElement.value
+    (generateElement.value !== "manual" && !downloadPasswordElement.value)
   );
 }
 
 function validate(_event) {
   mitIdControlElement.hidden = generateElement.value !== "server";
+  downloadPasswordControlElement.hidden = generateElement.value === "manual";
   submitElement.disabled = invalid();
 }
 
