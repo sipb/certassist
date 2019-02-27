@@ -13,6 +13,16 @@ const wsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
   window.location.host
 }/ws/mit`;
 
+function saveP12Binary(options, p12Binary) {
+  options.onStatus("Certificate ready");
+  saveBlob(
+    new Blob([p12Binary], {
+      type: "application/x-pkcs12",
+    }),
+    options.login + "-mit-cert.p12"
+  );
+}
+
 function xmlToObject(node) {
   if (node.children.length) {
     const obj = {};
@@ -64,6 +74,7 @@ async function downloadCertServerKey(options) {
   }
   const sessionid = startupReply.startupresponse.sessionid;
 
+  let p12Binary;
   try {
     options.onStatus("Authenticating");
     const authenticateReply = await apiCall({
@@ -92,7 +103,7 @@ async function downloadCertServerKey(options) {
       throw new Error("Certificate error: " + downloadReply.error.text);
     }
 
-    return forge.util.binary.base64.decode(
+    p12Binary = forge.util.binary.base64.decode(
       downloadReply.downloadcertresponse.pkcs12
     );
   } finally {
@@ -102,6 +113,8 @@ async function downloadCertServerKey(options) {
       sessionid: sessionid,
     });
   }
+
+  saveP12Binary(options, p12Binary);
 }
 
 const caHeaders = {
@@ -348,7 +361,10 @@ async function downloadCertClientKey(options) {
       friendlyName: `${options.login}'s MIT Certificate`,
     }
   );
-  return forge.util.binary.raw.decode(asn1.toDer(p12).getBytes());
+  saveP12Binary(
+    options,
+    forge.util.binary.raw.decode(asn1.toDer(p12).getBytes())
+  );
 }
 
 function downloadCert(options) {
@@ -408,10 +424,9 @@ async function submit(event) {
   generateElement.disabled = true;
   statusElement.textContent = "";
 
-  const login = loginElement.value;
   try {
-    const cert = await downloadCert({
-      login: login,
+    await downloadCert({
+      login: loginElement.value,
       password: passwordElement.value,
       mitid: mitIdElement.value,
       downloadpassword: downloadPasswordElement.value,
@@ -423,13 +438,6 @@ async function submit(event) {
         statusElement.textContent += status + "\n";
       },
     });
-    statusElement.textContent += "Certificate ready\n";
-    saveBlob(
-      new Blob([cert], {
-        type: "application/x-pkcs12",
-      }),
-      login + "-mit-cert.p12"
-    );
   } catch (error) {
     statusElement.textContent += error + "\n";
     throw error;
