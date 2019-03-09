@@ -63,6 +63,9 @@
       ]
     }
   },
+  "eslintIgnore": [
+    "/dist"
+  ],
   "prettier": {
     "trailingComma": "es5"
   }
