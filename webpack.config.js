@@ -1,4 +1,4 @@
-/* eslint-env node */
+"use strict";
 
 const GitRevisionPlugin = require("git-revision-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");

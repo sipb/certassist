@@ -60,8 +60,24 @@
         {
           "argsIgnorePattern": "^_"
         }
-      ]
-    }
+      ],
+      "strict": "error"
+    },
+    "overrides": [
+      {
+        "files": [
+          "webpack.config.js"
+        ],
+        "env": {
+          "browser": false,
+          "es6": false,
+          "node": true
+        },
+        "parserOptions": {
+          "sourceType": "script"
+        }
+      }
+    ]
   },
   "eslintIgnore": [
     "/dist"

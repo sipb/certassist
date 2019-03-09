@@ -1,5 +1,3 @@
-"use strict";
-
 import Duo from "@duosecurity/duo_web/js/Duo-Web-v2";
 import forge, { asn1 } from "node-forge";
 import "node-forge/lib/http";

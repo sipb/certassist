@@ -1,5 +1,3 @@
-"use strict";
-
 import forge, { asn1 } from "node-forge";
 import "node-forge/lib/http";
 
