@@ -11,8 +11,8 @@
     "url": "https://github.com/sipb/certassist.git"
   },
   "scripts": {
-    "build": "webpack -p",
-    "watch": "webpack --mode=development --debug --output-pathinfo --watch"
+    "build": "webpack -r babel-register-ts -p",
+    "watch": "webpack -r babel-register-ts --mode=development --debug --output-pathinfo --watch"
   },
   "dependencies": {
     "@duosecurity/duo_web": "^1.0.4",
@@ -24,7 +24,15 @@
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
+    "@babel/preset-typescript": "^7.3.3",
+    "@babel/register": "^7.4.4",
+    "@types/html-webpack-plugin": "^3.2.0",
+    "@types/mini-css-extract-plugin": "^0.2.0",
+    "@types/node-forge": "^0.8.3",
+    "@types/source-map": "^0.5.2",
+    "@types/webpack": "^4.4.31",
     "babel-loader": "^8.0.6",
+    "babel-register-ts": "^7.0.0",
     "css-loader": "^1.0.1",
     "file-loader": "^1.1.11",
     "git-revision-webpack-plugin": "^3.0.3",
@@ -42,7 +50,8 @@
           "corejs": 3,
           "useBuiltIns": "usage"
         }
-      ]
+      ],
+      "@babel/typescript"
     ]
   },
   "eslintConfig": {
@@ -50,12 +59,40 @@
       "browser": true,
       "es6": true
     },
-    "extends": "eslint:recommended",
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
     "parserOptions": {
-      "ecmaVersion": 2018,
       "sourceType": "module"
     },
+    "plugins": [
+      "@typescript-eslint"
+    ],
     "rules": {
+      "@typescript-eslint/camelcase": [
+        "error",
+        {
+          "allow": [
+            "post_action",
+            "sig_request",
+            "submit_callback"
+          ]
+        }
+      ],
+      "@typescript-eslint/explicit-function-return-type": [
+        "warn",
+        {
+          "allowExpressions": true,
+          "allowTypedFunctionExpressions": true
+        }
+      ],
+      "@typescript-eslint/indent": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-use-before-define": [
+        "error",
+        "nofunc"
+      ],
       "no-console": "off",
       "no-unused-vars": [
         "error",
@@ -68,15 +105,12 @@
     "overrides": [
       {
         "files": [
-          "webpack.config.js"
+          "webpack.config.ts"
         ],
         "env": {
           "browser": false,
           "es6": false,
           "node": true
-        },
-        "parserOptions": {
-          "sourceType": "script"
         }
       }
     ]

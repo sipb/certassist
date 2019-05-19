@@ -1,17 +1,63 @@
 import Duo from "@duosecurity/duo_web/js/Duo-Web-v2";
 import forge, { asn1 } from "node-forge";
-import "node-forge/lib/http";
+import http from "node-forge/lib/http";
 
-import wsHttpsFetch from "./wsHttpsFetch.js";
-import generateSpkac from "./generateSpkac.js";
-import saveBlob from "./saveBlob.js";
-import caStore from "./addTrustStore.js";
+import wsHttpsFetch from "./wsHttpsFetch";
+import generateSpkac from "./generateSpkac";
+import saveBlob from "./saveBlob";
+import caStore from "./addTrustStore";
+
+interface Options {
+  login: string;
+  password: string;
+  mitid: string;
+  downloadpassword: string;
+  expiration: string;
+  force: string;
+  alwaysreuse: string;
+  generate: string;
+  onStatus: (status: string) => void;
+}
 
 const wsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
   window.location.host
 }/ws/mit`;
 
-function saveP12Binary(options, p12Binary) {
+let working = false;
+const submitElement = document.getElementById("mit-submit") as HTMLInputElement;
+const loginElement = document.getElementById("mit-login") as HTMLInputElement;
+const passwordElement = document.getElementById(
+  "mit-password"
+) as HTMLInputElement;
+const mitIdControlElement = document.getElementById("mit-id-control")!;
+const mitIdElement = document.getElementById("mit-id") as HTMLInputElement;
+const duoControlElement = document.getElementById("mit-duo-control")!;
+const duoIframeContainerElement = document.getElementById(
+  "mit-duo-iframe-container"
+)!;
+const duoCancelElement = document.getElementById("mit-duo-cancel")!;
+const downloadPasswordControlElement = document.getElementById(
+  "mit-downloadpassword-control"
+)!;
+const downloadPasswordElement = document.getElementById(
+  "mit-downloadpassword"
+) as HTMLInputElement;
+const spkacControlElement = document.getElementById("mit-spkac-control")!;
+const spkacChallengeElement = document.getElementById(
+  "mit-spkac-challenge"
+) as HTMLInputElement;
+const spkacChallengeShElement = document.getElementById(
+  "mit-spkac-challenge-sh"
+)!;
+const spkacElement = document.getElementById("mit-spkac") as HTMLInputElement;
+const spkacSubmitElement = document.getElementById("mit-spkac-submit")!;
+const spkacCancelElement = document.getElementById("mit-spkac-cancel")!;
+const generateElement = document.getElementById(
+  "mit-generate"
+) as HTMLInputElement;
+const statusElement = document.getElementById("mit-status")!;
+
+function saveP12Binary(options: Options, p12Binary: Uint8Array): void {
   options.onStatus("Certificate ready");
   saveBlob(
     new Blob([p12Binary], {
@@ -21,20 +67,24 @@ function saveP12Binary(options, p12Binary) {
   );
 }
 
-function xmlToObject(node) {
-  if (node.children.length) {
-    const obj = {};
-    for (const child of node.children) obj[child.tagName] = xmlToObject(child);
+type Tree = { [key: string]: Tree } | string | null;
+
+function xmlToObject(node: Node): Tree {
+  if (node.childNodes.length) {
+    const obj: Tree = {};
+    for (const child of node.childNodes) {
+      obj[child.nodeName] = xmlToObject(child);
+    }
     return obj;
   } else {
     return node.textContent;
   }
 }
 
-async function apiCall(cmd) {
+async function apiCall(cmd: { [key: string]: string }): Promise<Tree> {
   const response = await wsHttpsFetch(
     wsUrl,
-    forge.http.createRequest({
+    http.createRequest({
       method: "POST",
       path: "/ca/api",
       headers: {
@@ -53,20 +103,33 @@ async function apiCall(cmd) {
     throw new Error("Server error: " + response.code + " " + response.message);
   }
   return xmlToObject(
-    new DOMParser().parseFromString(response.body, "text/xml")
+    new DOMParser().parseFromString(response.body!, "text/xml")
   );
 }
 
-async function downloadCertServerKey(options) {
+interface APIError {
+  error: { code: string; text: string };
+}
+
+async function downloadCertServerKey(options: Options): Promise<void> {
   options.onStatus("Opening session");
-  const startupReply = await apiCall({
+  const startupReply = (await apiCall({
     operation: "startup",
     sessiontype: "xml",
-    version: 2,
+    version: "2",
     os: "Windows NT 10.0.14393.0",
     browser: "Firefox 60.0",
-  });
-  if (startupReply.error) {
+  })) as
+    | {
+        startupresponse: {
+          sessiontype: string;
+          sessionid: string;
+          sessionexpires: string;
+          maxexpire: string;
+        };
+      }
+    | APIError;
+  if ("error" in startupReply) {
     console.log("Session error:", startupReply);
     throw new Error("Session error: " + startupReply.error.text);
   }
@@ -75,41 +138,41 @@ async function downloadCertServerKey(options) {
   let p12Binary;
   try {
     options.onStatus("Authenticating");
-    const authenticateReply = await apiCall({
+    const authenticateReply = (await apiCall({
       operation: "authenticate",
       sessionid: sessionid,
       login: options.login,
       password: options.password,
       mitid: options.mitid,
-    });
-    if (authenticateReply.error) {
+    })) as { authenticateresponse: null } | APIError;
+    if ("error" in authenticateReply) {
       console.log("Authentication error:", authenticateReply);
       throw new Error("Authentication error: " + authenticateReply.error.text);
     }
 
     options.onStatus("Downloading certificate");
-    const downloadReply = await apiCall({
+    const downloadReply = (await apiCall({
       operation: "downloadcert",
       sessionid: sessionid,
       downloadpassword: options.downloadpassword,
       expiration: options.expiration,
       force: options.force,
       alwaysreuse: options.alwaysreuse,
-    });
-    if (downloadReply.error) {
+    })) as { downloadcertresponse: { pkcs12: string } } | APIError;
+    if ("error" in downloadReply) {
       console.log("Certificate error:", downloadReply);
-      throw new Error("Certificate error: " + downloadReply.error.text);
+      throw new Error("Certificate error: " + downloadReply!.error.text);
     }
 
     p12Binary = forge.util.binary.base64.decode(
-      downloadReply.downloadcertresponse.pkcs12
+      downloadReply!.downloadcertresponse.pkcs12
     );
   } finally {
     options.onStatus("Closing session");
-    await apiCall({
+    (await apiCall({
       operation: "finish",
       sessionid: sessionid,
-    });
+    })) as { finishresponse: null } | APIError;
   }
 
   saveP12Binary(options, p12Binary);
@@ -122,10 +185,14 @@ const caHeaders = {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0",
 };
 
-function parseDuoDocument(doc) {
+function parseDuoDocument(
+  doc: Document
+): { host: string; sig_request: string; post_action: string } | null {
   const iframe = doc.getElementById("duo_iframe");
-  if (iframe === null || iframe.previousElementSibling === null) return null;
-  const m = iframe.previousElementSibling.text.match(
+  if (iframe === null) return null;
+  const script = iframe.previousElementSibling;
+  if (!(script instanceof HTMLScriptElement)) return null;
+  const m = script.text.match(
     /^\s*Duo\.init\(\{\s*'host':\s*"([^\\"]*)",\s*'sig_request':\s*"([^\\"]*)",\s*'post_action':\s*"([^\\"]*)"\s*\}\);\s*$/
   );
   if (m === null) return null;
@@ -133,10 +200,10 @@ function parseDuoDocument(doc) {
   return { host, sig_request, post_action };
 }
 
-async function start() {
+async function start(): Promise<http.Response> {
   const response = await wsHttpsFetch(
     wsUrl,
-    forge.http.createRequest({
+    http.createRequest({
       method: "GET",
       path: "/ca/",
       headers: caHeaders,
@@ -150,21 +217,27 @@ async function start() {
   return response;
 }
 
-async function scrapeCertDer(options) {
+interface ScrapeCertDerOptions extends Options {
+  getSpkac(challenge: string): Promise<string>;
+}
+
+async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
   options.onStatus("Opening session");
   const startResponse = await start();
   const headers = {
     ...caHeaders,
     Cookie: startResponse
       .getCookies()
-      .map(({ name, value }) => `${name}=${value}`)
+      .map(
+        ({ name, value }: { name: string; value: string }) => `${name}=${value}`
+      )
       .join("; "),
   };
 
   options.onStatus("Authenticating");
   let loginResponse = await wsHttpsFetch(
     wsUrl,
-    forge.http.createRequest({
+    http.createRequest({
       method: "POST",
       path: "/ca/login",
       headers: {
@@ -185,8 +258,10 @@ async function scrapeCertDer(options) {
 
   if (loginResponse.code === 200) {
     const loginDoc = new DOMParser().parseFromString(
-      loginResponse.body,
-      loginResponse.getField("Content-Type").match(/^[^;]*/)[0]
+      loginResponse.body!,
+      loginResponse
+        .getField("Content-Type")!
+        .match(/^[^;]*/)![0] as SupportedType
     );
     const duoParams = parseDuoDocument(loginDoc);
     if (duoParams === null) {
@@ -195,13 +270,13 @@ async function scrapeCertDer(options) {
     }
 
     options.onStatus("Starting Duo authentication");
-    let duoResponse;
+    let duoResponse: HTMLFormElement;
     const iframe = document.createElement("iframe");
     try {
       duoIframeContainerElement.appendChild(iframe);
       duoControlElement.hidden = false;
       duoResponse = await new Promise((resolve, reject) => {
-        function cancel(event) {
+        function cancel(event: Event): void {
           event.preventDefault();
           duoCancelElement.removeEventListener("click", cancel);
           reject(new Error("Duo authentication cancelled"));
@@ -209,15 +284,14 @@ async function scrapeCertDer(options) {
 
         duoCancelElement.addEventListener("click", cancel);
 
-        Duo.init(
-          Object.assign({}, duoParams, {
-            iframe,
-            submit_callback: duoResponse => {
-              duoCancelElement.removeEventListener("click", cancel);
-              resolve(duoResponse);
-            },
-          })
-        );
+        Duo.init({
+          ...duoParams,
+          iframe,
+          submit_callback: duoResponse => {
+            duoCancelElement.removeEventListener("click", cancel);
+            resolve(duoResponse);
+          },
+        });
       });
     } finally {
       duoControlElement.hidden = true;
@@ -227,7 +301,7 @@ async function scrapeCertDer(options) {
     options.onStatus("Finishing Duo authentication");
     loginResponse = await wsHttpsFetch(
       wsUrl,
-      forge.http.createRequest({
+      http.createRequest({
         method: duoResponse.method,
         path: duoParams.post_action,
         headers: {
@@ -235,7 +309,10 @@ async function scrapeCertDer(options) {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: [...duoResponse.elements]
-          .map(e => [e.name, e.value])
+          .map(e => [
+            (e as HTMLInputElement).name,
+            (e as HTMLInputElement).value,
+          ])
           .map(p => p.map(x => encodeURIComponent(x)).join("="))
           .join("&"),
       }),
@@ -270,7 +347,7 @@ async function scrapeCertDer(options) {
   options.onStatus("Fetching challenge");
   const formResponse = await wsHttpsFetch(
     wsUrl,
-    forge.http.createRequest({
+    http.createRequest({
       method: "GET",
       path: "/ca/certgen",
       headers,
@@ -285,19 +362,20 @@ async function scrapeCertDer(options) {
   }
 
   const doc = new DOMParser().parseFromString(
-    formResponse.body,
-    formResponse.getField("Content-Type").match(/^[^;]*/)[0]
+    formResponse.body!,
+    formResponse.getField("Content-Type")!.match(/^[^;]*/)![0] as SupportedType
   );
   const [userkey] = doc.getElementsByName("userkey");
   const challenge = userkey.getAttribute("challenge");
-  const life = doc.getElementById("life").value;
+  if (challenge === null) throw new Error("Missing challenge");
+  const life = (doc.getElementById("life") as HTMLInputElement).value;
 
   const spkac = await options.getSpkac(challenge);
 
   options.onStatus("Requesting certificate");
   const spkacResponse0 = await wsHttpsFetch(
     wsUrl,
-    forge.http.createRequest({
+    http.createRequest({
       method: "POST",
       path: "/ca/handlemoz",
       headers: {
@@ -328,7 +406,7 @@ async function scrapeCertDer(options) {
   options.onStatus("Downloading certificate");
   const spkacResponse2 = await wsHttpsFetch(
     wsUrl,
-    forge.http.createRequest({
+    http.createRequest({
       method: "GET",
       path: "/ca/mozcert/2",
       headers,
@@ -342,16 +420,16 @@ async function scrapeCertDer(options) {
     );
   }
 
-  return spkacResponse2.body;
+  return spkacResponse2.body!;
 }
 
-async function downloadCertClientKey(options) {
-  let keyPair;
+async function downloadCertClientKey(options: Options): Promise<void> {
+  let keyPair: forge.pki.rsa.KeyPair;
   const der = await scrapeCertDer({
     ...options,
     getSpkac: async challenge => {
       options.onStatus("Generating key pair");
-      keyPair = await new Promise((resolve, reject) =>
+      keyPair = await new Promise<forge.pki.rsa.KeyPair>((resolve, reject) =>
         forge.pki.rsa.generateKeyPair({ bits: 2048 }, (err, keyPair) =>
           err ? reject(err) : resolve(keyPair)
         )
@@ -360,7 +438,7 @@ async function downloadCertClientKey(options) {
     },
   });
   const p12 = forge.pkcs12.toPkcs12Asn1(
-    keyPair.privateKey,
+    keyPair!.privateKey,
     [forge.pki.certificateFromAsn1(asn1.fromDer(der))],
     options.downloadpassword,
     {
@@ -374,7 +452,7 @@ async function downloadCertClientKey(options) {
   );
 }
 
-async function downloadCertManual(options) {
+async function downloadCertManual(options: Options): Promise<void> {
   const der = await scrapeCertDer({
     ...options,
     getSpkac: async challenge => {
@@ -385,7 +463,7 @@ async function downloadCertManual(options) {
         spkacControlElement.hidden = false;
         options.onStatus("Awaiting manual SPKAC generation");
         return await new Promise((resolve, reject) => {
-          function submit(event) {
+          function submit(event: Event): void {
             event.preventDefault();
             spkacSubmitElement.removeEventListener("click", submit);
             spkacCancelElement.removeEventListener("click", cancel);
@@ -396,7 +474,7 @@ async function downloadCertManual(options) {
             resolve(spkac);
           }
 
-          function cancel(event) {
+          function cancel(event: Event): void {
             event.preventDefault();
             spkacSubmitElement.removeEventListener("click", submit);
             spkacCancelElement.removeEventListener("click", cancel);
@@ -422,7 +500,7 @@ async function downloadCertManual(options) {
   );
 }
 
-function downloadCert(options) {
+function downloadCert(options: Options): Promise<void> {
   if (options.generate === "client") {
     return downloadCertClientKey(options);
   } else if (options.generate === "server") {
@@ -434,37 +512,17 @@ function downloadCert(options) {
   }
 }
 
+declare global {
+  interface Window {
+    certAssistMitPing(): Promise<void>;
+  }
+}
+
 window.certAssistMitPing = async function certAssistMitPing() {
   await start();
 };
 
-let working = false;
-const submitElement = document.getElementById("mit-submit");
-const loginElement = document.getElementById("mit-login");
-const passwordElement = document.getElementById("mit-password");
-const mitIdControlElement = document.getElementById("mit-id-control");
-const mitIdElement = document.getElementById("mit-id");
-const duoControlElement = document.getElementById("mit-duo-control");
-const duoIframeContainerElement = document.getElementById(
-  "mit-duo-iframe-container"
-);
-const duoCancelElement = document.getElementById("mit-duo-cancel");
-const downloadPasswordControlElement = document.getElementById(
-  "mit-downloadpassword-control"
-);
-const downloadPasswordElement = document.getElementById("mit-downloadpassword");
-const spkacControlElement = document.getElementById("mit-spkac-control");
-const spkacChallengeElement = document.getElementById("mit-spkac-challenge");
-const spkacChallengeShElement = document.getElementById(
-  "mit-spkac-challenge-sh"
-);
-const spkacElement = document.getElementById("mit-spkac");
-const spkacSubmitElement = document.getElementById("mit-spkac-submit");
-const spkacCancelElement = document.getElementById("mit-spkac-cancel");
-const generateElement = document.getElementById("mit-generate");
-const statusElement = document.getElementById("mit-status");
-
-function invalid() {
+function invalid(): boolean {
   return (
     working ||
     !loginElement.value ||
@@ -475,13 +533,13 @@ function invalid() {
   );
 }
 
-function validate(_event) {
+function validate(): void {
   mitIdControlElement.hidden = generateElement.value !== "server";
   downloadPasswordControlElement.hidden = generateElement.value === "manual";
   submitElement.disabled = invalid();
 }
 
-async function submit(event) {
+async function submit(event: Event): Promise<void> {
   event.preventDefault();
   if (invalid()) return;
   working = true;
@@ -503,7 +561,7 @@ async function submit(event) {
       force: "0",
       alwaysreuse: "1",
       generate: generateElement.value,
-      onStatus: status => {
+      onStatus: (status: string) => {
         statusElement.textContent += status + "\n";
       },
     });
@@ -530,7 +588,7 @@ mitIdElement.addEventListener("input", validate);
 downloadPasswordElement.addEventListener("change", validate);
 downloadPasswordElement.addEventListener("input", validate);
 generateElement.addEventListener("change", validate);
-document.getElementById("mit-form").addEventListener("submit", submit);
+document.getElementById("mit-form")!.addEventListener("submit", submit);
 
 validate();
 loginElement.focus();

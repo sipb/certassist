@@ -1,21 +1,28 @@
 import forge, { asn1 } from "node-forge";
-import "node-forge/lib/http";
+import http from "node-forge/lib/http";
 
-import wsHttpsFetch from "./wsHttpsFetch.js";
-import generateSpkac from "./generateSpkac.js";
-import saveBlob from "./saveBlob.js";
-import caStore from "./addTrustStore.js";
+import wsHttpsFetch from "./wsHttpsFetch";
+import generateSpkac from "./generateSpkac";
+import saveBlob from "./saveBlob";
+import caStore from "./addTrustStore";
 
 const wsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
   window.location.host
 }/ws/csail`;
 
-async function downloadCert(options) {
+interface Options {
+  login: string;
+  password: string;
+  downloadpassword: string;
+  onStatus: (status: string) => void;
+}
+
+async function downloadCert(options: Options): Promise<Uint8Array> {
   options.onStatus("Authenticating");
   const authorization = "Basic " + btoa(options.login + ":" + options.password);
   const formResponse = await wsHttpsFetch(
     wsUrl,
-    forge.http.createRequest({
+    http.createRequest({
       method: "GET",
       path: "/request?ca=client;type=spkac",
       headers: {
@@ -33,17 +40,16 @@ async function downloadCert(options) {
     );
   }
 
-  const doc = new DOMParser().parseFromString(
-    formResponse.body,
-    formResponse.fields["Content-Type"][0]
-  );
+  const doc = new DOMParser().parseFromString(formResponse.body!, formResponse
+    .fields["Content-Type"][0] as SupportedType);
   const [keygen] = doc.getElementsByName("spkac");
   const keytype = keygen.getAttribute("keytype");
   if (keytype !== "rsa") throw new Error("Unrecognized keytype " + keytype);
   const challenge = keygen.getAttribute("challenge");
+  if (challenge === null) throw new Error("Missing challenge");
 
   options.onStatus("Generating key pair");
-  const keyPair = await new Promise((resolve, reject) =>
+  const keyPair = await new Promise<forge.pki.rsa.KeyPair>((resolve, reject) =>
     forge.pki.rsa.generateKeyPair({ bits: 2048 }, (err, keyPair) =>
       err ? reject(err) : resolve(keyPair)
     )
@@ -53,7 +59,7 @@ async function downloadCert(options) {
   options.onStatus("Downloading certificate");
   const spkacResponse = await wsHttpsFetch(
     wsUrl,
-    forge.http.createRequest({
+    http.createRequest({
       method: "POST",
       path: "/request",
       headers: {
@@ -80,20 +86,21 @@ async function downloadCert(options) {
     );
   }
 
-  const a1 = asn1.fromDer(spkacResponse.body);
-  let p7;
+  const a1 = asn1.fromDer(spkacResponse.body!);
+  let p7: forge.pkcs7.PkcsSignedData;
   try {
-    p7 = forge.pkcs7.messageFromAsn1(a1);
+    p7 = forge.pkcs7.messageFromAsn1(a1) as forge.pkcs7.PkcsSignedData;
   } catch (e) {
     if (
       e.message ===
       "Unsupported PKCS#7 message. Only wrapped ContentType Data supported."
     ) {
-      const contentType = a1.value[1].value[0].value[2].value[0];
+      const contentType = (((a1.value[1] as asn1.Asn1).value[0] as asn1.Asn1)
+        .value[2] as asn1.Asn1).value[0] as asn1.Asn1;
       if (contentType.value === asn1.oidToDer("0.0").getBytes()) {
         options.onStatus("Fixing CSAIL invalid ContentType");
         contentType.value = asn1.oidToDer(forge.oids.data).getBytes();
-        p7 = forge.pkcs7.messageFromAsn1(a1);
+        p7 = forge.pkcs7.messageFromAsn1(a1) as forge.pkcs7.PkcsSignedData;
       } else {
         throw e;
       }
@@ -115,15 +122,19 @@ async function downloadCert(options) {
 }
 
 let working = false;
-const submitElement = document.getElementById("csail-submit");
-const loginElement = document.getElementById("csail-login");
-const passwordElement = document.getElementById("csail-password");
+const submitElement = document.getElementById(
+  "csail-submit"
+) as HTMLInputElement;
+const loginElement = document.getElementById("csail-login") as HTMLInputElement;
+const passwordElement = document.getElementById(
+  "csail-password"
+) as HTMLInputElement;
 const downloadPasswordElement = document.getElementById(
   "csail-downloadpassword"
-);
-const statusElement = document.getElementById("csail-status");
+) as HTMLInputElement;
+const statusElement = document.getElementById("csail-status")!;
 
-function invalid() {
+function invalid(): boolean {
   return (
     working ||
     !loginElement.value ||
@@ -132,11 +143,11 @@ function invalid() {
   );
 }
 
-function validate(_event) {
+function validate(): void {
   submitElement.disabled = invalid();
 }
 
-async function submit(event) {
+async function submit(event: Event): Promise<void> {
   event.preventDefault();
   if (invalid()) return;
   working = true;
@@ -181,6 +192,6 @@ passwordElement.addEventListener("change", validate);
 passwordElement.addEventListener("input", validate);
 downloadPasswordElement.addEventListener("change", validate);
 downloadPasswordElement.addEventListener("input", validate);
-document.getElementById("csail-form").addEventListener("submit", submit);
+document.getElementById("csail-form")!.addEventListener("submit", submit);
 
 validate();

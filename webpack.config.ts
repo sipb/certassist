@@ -1,20 +1,21 @@
-"use strict";
-
-const GitRevisionPlugin = require("git-revision-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const path = require("path");
-const webpack = require("webpack");
+import GitRevisionPlugin from "git-revision-webpack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import path from "path";
+import webpack from "webpack";
 
 const gitRevisionPlugin = new GitRevisionPlugin({
   versionCommand: "describe --always --dirty",
 });
 
-module.exports = {
-  entry: "./main.js",
+const config: webpack.Configuration = {
+  entry: "./src/main",
   output: {
     filename: "[name].[chunkhash].bundle.js",
     path: path.resolve(__dirname, "dist"),
+  },
+  resolve: {
+    extensions: [".ts", ".js"],
   },
   plugins: [
     new MiniCssExtractPlugin({
@@ -22,7 +23,7 @@ module.exports = {
       chunkFilename: "[id].[contenthash].css",
     }),
     new HtmlWebpackPlugin({
-      template: "index.ejs",
+      template: "src/index.ejs",
     }),
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(gitRevisionPlugin.version()),
@@ -32,7 +33,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|ts)$/,
         exclude: /node_modules/,
         loader: "babel-loader",
       },
@@ -60,3 +61,5 @@ module.exports = {
   node: false,
   devtool: "source-map",
 };
+
+export default config;

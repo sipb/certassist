@@ -1,6 +1,9 @@
 import forge, { asn1 } from "node-forge";
 
-function generateSpkac(keyPair, challenge) {
+function generateSpkac(
+  keyPair: forge.pki.rsa.KeyPair,
+  challenge: string
+): string {
   const pkac = asn1.create(asn1.Class.UNIVERSAL, asn1.Type.SEQUENCE, true, [
     forge.pki.publicKeyToAsn1(keyPair.publicKey),
     asn1.create(asn1.Class.UNIVERSAL, asn1.Type.IA5STRING, false, challenge),

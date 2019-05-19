@@ -1,4 +1,4 @@
-function saveUrl(url, filename) {
+function saveUrl(url: string, filename: string): void {
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
@@ -13,7 +13,8 @@ const useObjectUrl =
   // https://crbug.com/733304
   !/ Android 7\..* Chrome\/5[0-9]\./.test(window.navigator.userAgent);
 
-const saveBlob = window.navigator.msSaveOrOpenBlob
+const saveBlob: (blob: Blob, filename: string) => void = window.navigator
+  .msSaveOrOpenBlob
   ? (blob, filename) => {
       window.navigator.msSaveOrOpenBlob(blob, filename);
     }
@@ -25,7 +26,9 @@ const saveBlob = window.navigator.msSaveOrOpenBlob
     }
   : (blob, filename) => {
       const reader = new FileReader();
-      reader.addEventListener("load", () => saveUrl(reader.result, filename));
+      reader.addEventListener("load", () =>
+        saveUrl(reader.result as string, filename)
+      );
       reader.readAsDataURL(blob);
     };
 

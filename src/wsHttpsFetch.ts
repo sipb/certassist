@@ -1,9 +1,13 @@
 import forge from "node-forge";
-import "node-forge/lib/http";
+import http from "node-forge/lib/http";
 
 const sessionCaches = new Map();
 
-async function wsHttpsFetch(wsUrl, request, caStore) {
+async function wsHttpsFetch(
+  wsUrl: string,
+  request: http.Request,
+  caStore: forge.pki.CAStore
+): Promise<http.Response> {
   const ws = new WebSocket(wsUrl, ["binary", "base64"]);
   ws.binaryType = "arraybuffer";
   let sessionCache = sessionCaches.get(wsUrl);
@@ -13,15 +17,15 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
   }
   let done = false;
   const buffer = forge.util.createBuffer();
-  const response = forge.http.createResponse();
+  const response = http.createResponse();
   return new Promise((resolve, reject) => {
-    const [, hostname] = request.getField("Host").match(/^([^:]*)(?::\d+)?$/);
+    const [, hostname] = request.getField("Host")!.match(/^([^:]*)(?::\d+)?$/)!;
     const tls = forge.tls.createConnection({
       server: false,
       caStore,
       sessionCache,
       virtualHost: hostname,
-      verify: (connection, verified, depth, certs) => {
+      verify: (_connection, verified, depth, certs) => {
         if (depth === 0) {
           const cn = certs[0].subject.getField("CN").value;
           if (cn !== hostname) {
@@ -76,7 +80,7 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
           reject(new Error("Connection closed unexpectedly"));
         }
       },
-      error: (connection, error) => {
+      error: (_connection, error) => {
         console.log("TLS error: ", error);
         if (!done) {
           done = true;
@@ -84,11 +88,11 @@ async function wsHttpsFetch(wsUrl, request, caStore) {
         }
       },
     });
-    ws.addEventListener("open", _event => {
+    ws.addEventListener("open", () => {
       console.log("Opened", ws.protocol, "WebSocket");
       tls.handshake();
     });
-    ws.addEventListener("close", _event => {
+    ws.addEventListener("close", () => {
       console.log("Closed WebSocket");
       tls.close();
     });
