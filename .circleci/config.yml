@@ -19,6 +19,7 @@ jobs:
           eslint
           prettier
           typescript
+      - run: tsc
       - run: eslint --ext js,ts .
       - run: >
           prettier --check
