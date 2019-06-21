@@ -1,206 +1,206 @@
-@import '~@fortawesome/fontawesome-free/css/all.css';
+@import "~@fortawesome/fontawesome-free/css/all.css";
 
 body {
-    font: 86%/1.33 "Lucida Grande", Arial, sans-serif;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 60em;
-    padding: 0 1.5em;
+  font: 86%/1.33 "Lucida Grande", Arial, sans-serif;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 60em;
+  padding: 0 1.5em;
 }
 
 code {
-    background-color: #eee;
-    border: 1px solid #ccc;
-    padding: .15em;
-    border-radius: .3em;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 0.15em;
+  border-radius: 0.3em;
 }
 
 .tabs > input[type="radio"] {
-    position: absolute;
-    clip: rect(0px, 0px, 0px, 0px);
+  position: absolute;
+  clip: rect(0px, 0px, 0px, 0px);
 }
 
 .tabs > label {
-    display: inline-block;
-    padding: 0.5em 1.5em;
-    border-radius: .3em .3em 0 0;
-    cursor: pointer;
-    color: #090;
+  display: inline-block;
+  padding: 0.5em 1.5em;
+  border-radius: 0.3em 0.3em 0 0;
+  cursor: pointer;
+  color: #090;
 }
 
 .tabs > input:focus + label {
-    outline: 1px dotted;
-    outline: -webkit-focus-ring-color auto 5px;
+  outline: 1px dotted;
+  outline: -webkit-focus-ring-color auto 5px;
 }
 
 .tabs > input:checked + label {
-    background-color: #cfd;
-    color: #000;
+  background-color: #cfd;
+  color: #000;
 }
 
 form {
-    display: none;
+  display: none;
 }
 
 #mit-tab:checked ~ #mit-form,
 #csail-tab:checked ~ #csail-form {
-    display: block;
+  display: block;
 }
 
 form {
-    background-color: #cfd;
-    border-radius: .3em;
-    padding: 1em;
+  background-color: #cfd;
+  border-radius: 0.3em;
+  padding: 1em;
 }
 
 #mit-form {
-    border-top-left-radius: 0;
+  border-top-left-radius: 0;
 }
 
 .control {
-    margin: .25em 0;
-    position: relative;
+  margin: 0.25em 0;
+  position: relative;
 }
 
 .control > label:first-child {
-    display: inline-block;
-    text-align: right;
-    font-weight: bold;
-    width: 25%;
-    box-sizing: border-box;
+  display: inline-block;
+  text-align: right;
+  font-weight: bold;
+  width: 25%;
+  box-sizing: border-box;
 }
 
 .control > input[type="text"],
 .control > input[type="password"] {
-    margin: 0.25em 0;
-    padding: .5em .6em;
-    border: 1px solid #ccc;
-    border-radius: .3em;
-    box-shadow: inset 0 1px 3px #ddd;
-    width: 74%;
-    box-sizing: border-box;
+  margin: 0.25em 0;
+  padding: 0.5em 0.6em;
+  border: 1px solid #ccc;
+  border-radius: 0.3em;
+  box-shadow: inset 0 1px 3px #ddd;
+  width: 74%;
+  box-sizing: border-box;
 }
 
 .control > button[type="submit"] {
-    margin: 0.25em 0;
-    background-color: #0078e7;
-    color: #fff;
-    padding: .5em 2em;
-    border: transparent;
-    border-radius: .3em;
-    cursor: pointer;
+  margin: 0.25em 0;
+  background-color: #0078e7;
+  color: #fff;
+  padding: 0.5em 2em;
+  border: transparent;
+  border-radius: 0.3em;
+  cursor: pointer;
 }
 
 .control > button[type="submit"]:disabled {
-    opacity: .4;
-    cursor: not-allowed;
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 #mit-duo-iframe-container iframe {
-    margin: 0.25em 0;
-    width: 74%;
-    height: 330px;
-    vertical-align: -320px;
-    border-style: none;
+  margin: 0.25em 0;
+  width: 74%;
+  height: 330px;
+  vertical-align: -320px;
+  border-style: none;
 }
 
 #mit-duo-cancel,
 #mit-spkac-submit,
 #mit-spkac-cancel {
-    line-height: 3em;
-    color: #fff;
-    padding: .5em 2em;
-    border: transparent;
-    border-radius: .3em;
-    cursor: pointer;
+  line-height: 3em;
+  color: #fff;
+  padding: 0.5em 2em;
+  border: transparent;
+  border-radius: 0.3em;
+  cursor: pointer;
 }
 
 #mit-spkac-submit {
-    background-color: #0078e7;
+  background-color: #0078e7;
 }
 
 #mit-duo-cancel,
 #mit-spkac-cancel {
-    background-color: #6c757d;
+  background-color: #6c757d;
 }
 
 #mit-advanced {
-    position: absolute;
-    clip: rect(0px, 0px, 0px, 0px);
+  position: absolute;
+  clip: rect(0px, 0px, 0px, 0px);
 }
 
 #mit-advanced + .control > label[for="mit-advanced"] {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #mit-advanced:focus + .control > label[for="mit-advanced"] {
-    outline: 1px dotted;
-    outline: -webkit-focus-ring-color auto 5px;
+  outline: 1px dotted;
+  outline: -webkit-focus-ring-color auto 5px;
 }
 
 #mit-advanced:checked + .control .advanced-off,
 #mit-advanced:not(:checked) + .control .advanced-on,
 #mit-advanced:not(:checked) ~ .advanced-on {
-    display: none;
+  display: none;
 }
 
 form pre:not(:empty) {
-    background-color: #efe;
-    padding: .5em .6em;
-    border-radius: .3em;
+  background-color: #efe;
+  padding: 0.5em 0.6em;
+  border-radius: 0.3em;
 }
 
-@media(max-width: 42em) {
-    .control > label:first-child {
-        display: block;
-        text-align: left;
-        width: 100%;
-    }
+@media (max-width: 42em) {
+  .control > label:first-child {
+    display: block;
+    text-align: left;
+    width: 100%;
+  }
 
-    .control > input[type="text"],
-    .control > input[type="password"],
-    #mit-duo-iframe-container iframe {
-        width: 100%;
-    }
+  .control > input[type="text"],
+  .control > input[type="password"],
+  #mit-duo-iframe-container iframe {
+    width: 100%;
+  }
 }
 
 .instructions span,
 .instructions div {
-    display: none;
-    color: #060;
-    margin-top: .5em;
+  display: none;
+  color: #060;
+  margin-top: 0.5em;
 }
 
 .instructions input {
-    position: absolute;
-    clip: rect(0px, 0px, 0px, 0px);
+  position: absolute;
+  clip: rect(0px, 0px, 0px, 0px);
 }
 
 .instructions label {
-    cursor: pointer;
-    padding: .2em .5em;
-    border-radius: .3em;
-    color: #090;
-    white-space: nowrap;
+  cursor: pointer;
+  padding: 0.2em 0.5em;
+  border-radius: 0.3em;
+  color: #090;
+  white-space: nowrap;
 }
 
 .instructions input:focus + label {
-    outline: 1px dotted;
-    outline: -webkit-focus-ring-color auto 5px;
+  outline: 1px dotted;
+  outline: -webkit-focus-ring-color auto 5px;
 }
 
 .instructions input:checked + label {
-    background: #cfd;
-    color: #000;
+  background: #cfd;
+  color: #000;
 }
 
 .instructions :checked + label .off,
 .instructions :not(:checked) + label .on {
-    display: none;
+  display: none;
 }
 
 .instructions .platform {
-    display: none;
+  display: none;
 }
 
 #browser-chrome:checked ~ .platform-windows,
@@ -211,43 +211,55 @@ form pre:not(:empty) {
 #browser-firefox:checked ~ .platform-mac,
 #browser-firefox:checked ~ .platform-linux,
 #browser-firefox:checked ~ .platform-android {
-    display: inline;
+  display: inline;
 }
 
-#browser-chrome:checked ~ #platform-windows:checked ~ .instructions-chrome-windows,
+#browser-chrome:checked
+  ~ #platform-windows:checked
+  ~ .instructions-chrome-windows,
 #browser-chrome:checked ~ #platform-mac:checked ~ .instructions-chrome-mac,
 #browser-chrome:checked ~ #platform-linux:checked ~ .instructions-chrome-linux,
-#browser-chrome:checked ~ #platform-android:checked ~ .instructions-chrome-android,
+#browser-chrome:checked
+  ~ #platform-android:checked
+  ~ .instructions-chrome-android,
 #browser-edge:checked ~ .instructions-edge,
-#browser-firefox:checked ~ #platform-windows:checked ~ .instructions-firefox-windows,
+#browser-firefox:checked
+  ~ #platform-windows:checked
+  ~ .instructions-firefox-windows,
 #browser-firefox:checked ~ #platform-mac:checked ~ .instructions-firefox-mac,
-#browser-firefox:checked ~ #platform-linux:checked ~ .instructions-firefox-linux,
-#browser-firefox:checked ~ #platform-android:checked ~ .instructions-firefox-android,
+#browser-firefox:checked
+  ~ #platform-linux:checked
+  ~ .instructions-firefox-linux,
+#browser-firefox:checked
+  ~ #platform-android:checked
+  ~ .instructions-firefox-android,
 #browser-safari:checked ~ .instructions-safari {
-    display: block;
+  display: block;
 }
 
 #howitworks:checked ~ #howitworks-text {
-    display: block;
+  display: block;
 }
 
 #footer {
-    margin: 1.5em 0 0;
-    border-top: 1px solid #090;
-    padding: 0.5em 0 0;
+  margin: 1.5em 0 0;
+  border-top: 1px solid #090;
+  padding: 0.5em 0 0;
 }
 
 #footer li {
-    display: inline;
-    list-style-type: none;
-    padding: 0 1em 0 0;
+  display: inline;
+  list-style-type: none;
+  padding: 0 1em 0 0;
 }
 
-#footer img, #footer i {
-    vertical-align: middle;
+#footer img,
+#footer i {
+  vertical-align: middle;
 }
 
-#footer .version, #footer .version a {
-    color: #999;
-    text-decoration: none;
+#footer .version,
+#footer .version a {
+  color: #999;
+  text-decoration: none;
 }
