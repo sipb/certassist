@@ -1,0 +1,29 @@
+version: 2.1
+orbs:
+  node: circleci/node@1.0.1
+jobs:
+  build:
+    executor:
+      name: node/default
+      tag: "8"
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm ci
+      - run: npm run build
+      - run: >
+          sudo npm install -g
+          @typescript-eslint/eslint-plugin
+          @typescript-eslint/parser
+          eslint
+          prettier
+          typescript
+      - run: eslint --ext js,ts .
+      - run: >
+          prettier --check
+          '**/*.css'
+          '**/*.js'
+          '**/*.json'
+          '**/*.ts'
+          '**/*.yml'
