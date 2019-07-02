@@ -12,17 +12,10 @@ jobs:
           steps:
             - run: npm ci
       - run: npm run build
+      - run: npx --no-install tsc
+      - run: npx --no-install eslint --ext js,ts .
       - run: >
-          sudo npm install -g
-          @typescript-eslint/eslint-plugin
-          @typescript-eslint/parser
-          eslint
-          prettier
-          typescript
-      - run: tsc
-      - run: eslint --ext js,ts .
-      - run: >
-          prettier --check
+          npx --no-install prettier --check
           '**/*.css'
           '**/*.js'
           '**/*.json'
