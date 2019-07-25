@@ -891,12 +891,6 @@
       "integrity": "sha1-a9p9uGU/piZD9e5p6facEaOS46Y=",
       "dev": true
     },
-    "@types/source-map": {
-      "version": "0.5.2",
-      "resolved": "https://registry.npmjs.org/@types/source-map/-/source-map-0.5.2.tgz",
-      "integrity": "sha512-++w4WmMbk3dS3UeHGzAG+xJOSz5Xqtjys/TBkqG3qp3SeWE7Wwezqe5eB7B51cxUyh4PW7bwVotpsLdBK0D8cw==",
-      "dev": true
-    },
     "@types/tapable": {
       "version": "1.0.4",
       "resolved": "https://registry.npmjs.org/@types/tapable/-/tapable-1.0.4.tgz",
