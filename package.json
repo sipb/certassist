@@ -125,6 +125,14 @@
     "/dist"
   ],
   "prettier": {
-    "trailingComma": "es5"
+    "trailingComma": "es5",
+    "overrides": [
+      {
+        "files": "*.ejs",
+        "options": {
+          "parser": "html"
+        }
+      }
+    ]
   }
 }

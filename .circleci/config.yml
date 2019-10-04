@@ -17,6 +17,7 @@ jobs:
       - run: >
           npx --no-install prettier --check
           '**/*.css'
+          '**/*.ejs'
           '**/*.js'
           '**/*.json'
           '**/*.ts'

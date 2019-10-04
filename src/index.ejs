@@ -3,78 +3,80 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="<%- require('./favicon.ico') %>" />
+    <link rel="icon" href="<%= require('./favicon.ico') %>" />
     <title>CertAssist</title>
   </head>
   <body>
     <h1>Get an MIT certificate</h1>
-
     <div class="tabs">
-      <input id="mit-tab" type="radio" name="tabs" checked
-      /><label for="mit-tab">MIT</label><input id="csail-tab"
-      type="radio" name="tabs" /><label for="csail-tab">CSAIL</label>
-
+      <input id="mit-tab" type="radio" name="tabs" checked /><label
+        for="mit-tab"
+        >MIT</label
+      ><input id="csail-tab" type="radio" name="tabs" /><label for="csail-tab"
+        >CSAIL</label
+      >
       <form id="mit-form" action="blob:">
         <div class="control">
           <label for="mit-login">Kerberos username:</label>
-          <input type="text" id="mit-login" autofocus>
+          <input type="text" id="mit-login" autofocus />
         </div>
         <div class="control">
           <label for="mit-password">Kerberos password:</label>
-          <input type="password" id="mit-password">
+          <input type="password" id="mit-password" />
         </div>
         <div class="control" id="mit-id-control" hidden>
           <label for="mit-id">MIT ID number:</label>
-          <input type="text" id="mit-id">
+          <input type="text" id="mit-id" />
         </div>
         <div id="mit-duo-control" hidden>
           <div class="control" id="mit-duo-iframe-container">
             <label>Duo authentication:</label>
           </div>
           <div class="control">
-            <label></label>
-            <a id="mit-duo-cancel">Cancel</a>
+            <label></label> <a id="mit-duo-cancel">Cancel</a>
           </div>
         </div>
         <div class="control" id="mit-downloadpassword-control">
           <label for="mit-downloadpassword">Download password:</label>
-          <input type="password" id="mit-downloadpassword">
+          <input type="password" id="mit-downloadpassword" />
         </div>
         <div id="mit-spkac-control" hidden>
           <div class="control">
             <label for="mit-spkac-challenge">SPKAC challenge:</label>
-            <input type="text" id="mit-spkac-challenge" value="" readonly>
+            <input type="text" id="mit-spkac-challenge" value="" readonly />
           </div>
-          <div class="control">
-            <label></label> Generate a private key:
-          </div>
+          <div class="control"><label></label> Generate a private key:</div>
           <div class="control">
             <label></label>
             <code>openssl genrsa -out privkey.pem 2048</code>
           </div>
           <div class="control">
-            <label></label> Then paste the output of the following
-            command below:
+            <label></label>
+            Then paste the output of the following command below:
           </div>
           <div class="control">
             <label></label>
-            <code>openssl spkac -key privkey.pem
-              -challenge <span id="mit-spkac-challenge-sh">''</span></code>
+            <code>
+              openssl spkac -key privkey.pem -challenge
+              <span id="mit-spkac-challenge-sh">''</span>
+            </code>
           </div>
           <div class="control">
             <label for="mit-spkac">SPKAC:</label>
-            <input type="text" id="mit-spkac">
+            <input type="text" id="mit-spkac" />
           </div>
           <div class="control">
-            <label></label>
-            <a id="mit-spkac-submit">Submit</a>
+            <label></label> <a id="mit-spkac-submit">Submit</a>
             <a id="mit-spkac-cancel">Cancel</a>
           </div>
         </div>
-        <input type="checkbox" id="mit-advanced">
+        <input type="checkbox" id="mit-advanced" />
         <div class="control">
           <label></label>
-          <label for="mit-advanced">Advanced <i class="fa fa-caret-right advanced-off"></i><i class="fa fa-caret-down advanced-on"></i></label>
+          <label for="mit-advanced">
+            Advanced <i class="fa fa-caret-right advanced-off"></i
+            ><i class="fa fa-caret-down advanced-on"></i>
+          </label>
         </div>
         <div class="advanced-on">
           <div class="control">
@@ -88,134 +90,208 @@
         </div>
         <div class="control">
           <label></label>
-          <button type="submit" id="mit-submit" disabled="disabled"><i class="fa fa-download"></i> Go</button>
+          <button type="submit" id="mit-submit" disabled="disabled">
+            <i class="fa fa-download"></i> Go
+          </button>
         </div>
         <pre id="mit-status"></pre>
       </form>
-
       <form id="csail-form" action="blob:">
         <div class="control">
           <label for="csail-login">CSAIL username:</label>
-          <input type="text" id="csail-login">
+          <input type="text" id="csail-login" />
         </div>
         <div class="control">
           <label for="csail-password">CSAIL password:</label>
-          <input type="password" id="csail-password">
+          <input type="password" id="csail-password" />
         </div>
         <div class="control">
           <label for="csail-downloadpassword">Download password:</label>
-          <input type="password" id="csail-downloadpassword">
+          <input type="password" id="csail-downloadpassword" />
         </div>
         <div class="control">
           <label></label>
-          <button type="submit" id="csail-submit" disabled="disabled"><i class="fa fa-download"></i> Go</button>
+          <button type="submit" id="csail-submit" disabled="disabled">
+            <i class="fa fa-download"></i> Go
+          </button>
         </div>
         <pre id="csail-status"></pre>
       </form>
     </div>
-
-    <p>Your new certificate will be saved as a PKCS #12 archive
-      encrypted with your specified download password.  You can then
-      import this *.p12 file into your favorite browser.</p>
-
-    <p class="instructions"><strong>Browser instructions:</strong>
-      <input type="radio" name="browser" value="chrome" id="browser-chrome">
-      <label for="browser-chrome"><i class="fab fa-chrome"></i> Chrome</label>
-      <input type="radio" name="browser" value="edge" id="browser-edge">
-      <label for="browser-edge"><i class="fab fa-edge"></i> IE/Edge</label>
-      <input type="radio" name="browser" value="firefox" id="browser-firefox">
-      <label for="browser-firefox"><i class="fab fa-firefox"></i> Firefox</label>
-      <input type="radio" name="browser" value="safari" id="browser-safari">
-      <label for="browser-safari"><i class="fab fa-safari"></i> Safari</label>
-
-      <strong class="platform platform-windows platform-linux platform-android">on</strong>
-      <input type="radio" name="platform" value="windows" id="platform-windows" class="platform platform-windows">
-      <label for="platform-windows" class="platform platform-windows"><i class="fab fa-windows"></i> Windows</label>
-      <input type="radio" name="platform" value="mac" id="platform-mac" class="platform platform-mac">
-      <label for="platform-mac" class="platform platform-mac"><i class="fab fa-apple"></i> Mac</label>
-      <input type="radio" name="platform" value="linux" id="platform-linux" class="platform platform-linux">
-      <label for="platform-linux" class="platform platform-linux"><i class="fab fa-linux"></i> Linux</label>
-      <input type="radio" name="platform" value="android" id="platform-android" class="platform platform-android">
-      <label for="platform-android" class="platform platform-android"><i class="fab fa-android"></i> Android</label>
-
-      <span class="instructions-chrome-windows instructions-edge">Open
-        the downloaded *.p12 file, and follow the steps of the
-        Certificate Import Wizard.</span>
-      <span class="instructions-chrome-linux">Save the *.p12 file,
-        then import it at Settings → Privacy &amp; Security → Security
-        → Manage certificates → Your Certificates → Import.</span>
-      <span class="instructions-firefox-windows">Save the *.p12 file,
-        then import it at Options → Privacy &amp; Security → Security
-        → Certificates → View Certificates → Your Certificates →
-        Import.</span>
-      <span class="instructions-firefox-mac
-        instructions-firefox-linux">Save the *.p12 file, then import
-        it at Preferences → Privacy &amp; Security → Security →
-        Certificates → View Certificates → Your Certificates →
-        Import.</span>
-      <span class="instructions-chrome-android">Open the downloaded
-        *.p12 file, and follow the prompts to install your
-        certificate.</span>
-      <span class="instructions-chrome-mac instructions-safari">Open
-        the downloaded *.p12 file, and follow the prompts to add your
-        certificate to the login keychain.</span>
-      <span class="instructions-firefox-android">Firefox on
-        Android <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=868370">does
-        not currently support</a> importing a certificate from a *.p12
-        file.  However, you can install your certificate
-        from <a href="https://ca.mit.edu/">ca.mit.edu</a> directly.
-        (Alternatively, if you have root access to your device, you
-        may be able
-        to <a href="https://fingers.today/tech/import-p12-client-cert-firefox-android">import
-        the *.p12 file manually</a>.)</span>
+    <p>
+      Your new certificate will be saved as a PKCS #12 archive encrypted with
+      your specified download password. You can then import this *.p12 file into
+      your favorite browser.
     </p>
-
+    <p class="instructions">
+      <strong>Browser instructions:</strong>
+      <input type="radio" name="browser" value="chrome" id="browser-chrome" />
+      <label for="browser-chrome"><i class="fab fa-chrome"></i> Chrome</label>
+      <input type="radio" name="browser" value="edge" id="browser-edge" />
+      <label for="browser-edge"><i class="fab fa-edge"></i> IE/Edge</label>
+      <input type="radio" name="browser" value="firefox" id="browser-firefox" />
+      <label for="browser-firefox"
+        ><i class="fab fa-firefox"></i> Firefox</label
+      >
+      <input type="radio" name="browser" value="safari" id="browser-safari" />
+      <label for="browser-safari"><i class="fab fa-safari"></i> Safari</label>
+      <strong class="platform platform-windows platform-linux platform-android">
+        on
+      </strong>
+      <input
+        type="radio"
+        name="platform"
+        value="windows"
+        id="platform-windows"
+        class="platform platform-windows"
+      />
+      <label for="platform-windows" class="platform platform-windows">
+        <i class="fab fa-windows"></i> Windows</label
+      >
+      <input
+        type="radio"
+        name="platform"
+        value="mac"
+        id="platform-mac"
+        class="platform platform-mac"
+      />
+      <label for="platform-mac" class="platform platform-mac">
+        <i class="fab fa-apple"></i> Mac</label
+      >
+      <input
+        type="radio"
+        name="platform"
+        value="linux"
+        id="platform-linux"
+        class="platform platform-linux"
+      />
+      <label for="platform-linux" class="platform platform-linux">
+        <i class="fab fa-linux"></i> Linux</label
+      >
+      <input
+        type="radio"
+        name="platform"
+        value="android"
+        id="platform-android"
+        class="platform platform-android"
+      />
+      <label for="platform-android" class="platform platform-android">
+        <i class="fab fa-android"></i> Android</label
+      >
+      <span class="instructions-chrome-windows instructions-edge">
+        Open the downloaded *.p12 file, and follow the steps of the Certificate
+        Import Wizard.
+      </span>
+      <span class="instructions-chrome-linux">
+        Save the *.p12 file, then import it at Settings → Privacy &amp; Security
+        → Security → Manage certificates → Your Certificates → Import.
+      </span>
+      <span class="instructions-firefox-windows">
+        Save the *.p12 file, then import it at Options → Privacy &amp; Security
+        → Security → Certificates → View Certificates → Your Certificates →
+        Import.
+      </span>
+      <span class="instructions-firefox-mac instructions-firefox-linux">
+        Save the *.p12 file, then import it at Preferences → Privacy &amp;
+        Security → Security → Certificates → View Certificates → Your
+        Certificates → Import.
+      </span>
+      <span class="instructions-chrome-android">
+        Open the downloaded *.p12 file, and follow the prompts to install your
+        certificate.
+      </span>
+      <span class="instructions-chrome-mac instructions-safari">
+        Open the downloaded *.p12 file, and follow the prompts to add your
+        certificate to the login keychain.
+      </span>
+      <span class="instructions-firefox-android">
+        Firefox on Android
+        <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=868370">
+          does not currently support
+        </a>
+        importing a certificate from a *.p12 file. However, you can install your
+        certificate from <a href="https://ca.mit.edu/">ca.mit.edu</a> directly.
+        (Alternatively, if you have root access to your device, you may be able
+        to
+        <a
+          href="https://fingers.today/tech/import-p12-client-cert-firefox-android"
+          >import the *.p12 file manually</a
+        >.)
+      </span>
+    </p>
     <div class="instructions">
       <strong>How does this work?</strong>
-      <input type="checkbox" id="howitworks">
-      <label for="howitworks">Details <i class="fa fa-caret-right off"></i><i class="fa fa-caret-down on"></i></label>
+      <input type="checkbox" id="howitworks" />
+      <label for="howitworks">
+        Details <i class="fa fa-caret-right off"></i
+        ><i class="fa fa-caret-down on"></i>
+      </label>
       <div id="howitworks-text">
-        <p>This uses the forms provided
-          on <a href="https://ca.mit.edu/">ca.mit.edu</a> and
-          <a href="https://ca.csail.mit.edu:1443/">ca.csail.mit.edu</a>
-          to obtain certificates and let you to download and import
-          them, even if your browser lacks &lt;keygen&gt; support.</p>
-
-        <p>As a workaround for the absence of
-          <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a>
-          headers on these servers, CertAssist uses
-          a <a href="https://github.com/digitalbazaar/forge#readme">JavaScript
-          TLS library</a> to make an end-to-end encrypted and
-          authenticated HTTPS connection to them.  The encrypted
-          connection is relayed over a WebSocket proxy on this server
-          that does not need to be trusted (but is itself encrypted
-          anyway, because it might as well be).</p>
-
-        <p>The downloaded certificate file is delivered from the client
-          side
-          using <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL">createObjectURL</a>,
-          a <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs">data
-            URL</a>,
-          or <a href="https://msdn.microsoft.com/en-us/library/hh772332(v=vs.85).aspx">msSaveOrOpenBlob</a>,
-          depending on browser support.</p>
-
-        <p>This design ensures that your private information is only
-          visible to your browser and ca.mit.edu or ca.csail.mit.edu,
-          and is not exposed to this server.</p>
+        <p>
+          This uses the forms provided on
+          <a href="https://ca.mit.edu/">ca.mit.edu</a> and
+          <a href="https://ca.csail.mit.edu:1443/">ca.csail.mit.edu</a> to
+          obtain certificates and let you to download and import them, even if
+          your browser lacks &lt;keygen&gt; support.
+        </p>
+        <p>
+          As a workaround for the absence of
+          <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">
+            CORS
+          </a>
+          headers on these servers, CertAssist uses a
+          <a href="https://github.com/digitalbazaar/forge#readme">
+            JavaScript TLS library
+          </a>
+          to make an end-to-end encrypted and authenticated HTTPS connection to
+          them. The encrypted connection is relayed over a WebSocket proxy on
+          this server that does not need to be trusted (but is itself encrypted
+          anyway, because it might as well be).
+        </p>
+        <p>
+          The downloaded certificate file is delivered from the client side
+          using
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL"
+            >createObjectURL</a
+          >, a
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs"
+            >data URL</a
+          >, or
+          <a
+            href="https://msdn.microsoft.com/en-us/library/hh772332(v=vs.85).aspx"
+            >msSaveOrOpenBlob</a
+          >, depending on browser support.
+        </p>
+        <p>
+          This design ensures that your private information is only visible to
+          your browser and ca.mit.edu or ca.csail.mit.edu, and is not exposed to
+          this server.
+        </p>
       </div>
     </div>
-
     <ul id="footer">
-      <li><img src="<%- require('./sipb-fuzzball.png') %>" width="22"
-        height="30" alt="SIPB fuzzball" /> CertAssist is provided
-        by <a href="https://sipb.mit.edu/">SIPB</a>; it is not an
-        official IS&amp;T or TIG service.</li>
-      <li><i class="fab fa-2x
-        fa-github"></i> <a href="https://github.com/sipb/certassist">Source</a>
-        on GitHub.</li>
-      <li class="version"><i class="fa fa-code-branch"></i>
-        <a href="https://github.com/sipb/certassist/commit/<%= COMMITHASH
-        %>"><%= VERSION %></a></li>
+      <li>
+        <img
+          src="<%= require('./sipb-fuzzball.png') %>"
+          width="22"
+          height="30"
+          alt="SIPB fuzzball"
+        />
+        CertAssist is provided by <a href="https://sipb.mit.edu/">SIPB</a>; it
+        is not an official IS&amp;T or TIG service.
+      </li>
+      <li>
+        <i class="fab fa-2x fa-github"></i>
+        <a href="https://github.com/sipb/certassist">Source</a> on GitHub.
+      </li>
+      <li class="version">
+        <i class="fa fa-code-branch"></i>
+        <a href="https://github.com/sipb/certassist/commit/<%= COMMITHASH %>">
+          <%= VERSION %>
+        </a>
+      </li>
     </ul>
   </body>
 </html>
