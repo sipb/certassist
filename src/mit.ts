@@ -161,11 +161,11 @@ async function downloadCertServerKey(options: Options): Promise<void> {
     })) as { downloadcertresponse: { pkcs12: string } } | APIError;
     if ("error" in downloadReply) {
       console.log("Certificate error:", downloadReply);
-      throw new Error("Certificate error: " + downloadReply!.error.text);
+      throw new Error("Certificate error: " + downloadReply.error.text);
     }
 
     p12Binary = forge.util.binary.base64.decode(
-      downloadReply!.downloadcertresponse.pkcs12
+      downloadReply.downloadcertresponse.pkcs12
     );
   } finally {
     options.onStatus("Closing session");
