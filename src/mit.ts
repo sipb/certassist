@@ -2,10 +2,10 @@ import Duo from "@duosecurity/duo_web/js/Duo-Web-v2";
 import forge, { asn1 } from "node-forge";
 import http from "node-forge/lib/http";
 
-import wsHttpsFetch from "./wsHttpsFetch";
-import generateSpkac from "./generateSpkac";
-import saveBlob from "./saveBlob";
-import caStore from "./addTrustStore";
+import wsHttpsFetch from "./ws-https-fetch";
+import generateSpkac from "./generate-spkac";
+import saveBlob from "./save-blob";
+import caStore from "./add-trust-store";
 
 interface Options {
   login: string;
@@ -24,38 +24,44 @@ const wsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
 }/ws/mit`;
 
 let working = false;
-const submitElement = document.getElementById("mit-submit") as HTMLInputElement;
-const loginElement = document.getElementById("mit-login") as HTMLInputElement;
-const passwordElement = document.getElementById(
-  "mit-password"
+const submitElement = document.querySelector("#mit-submit") as HTMLInputElement;
+const loginElement = document.querySelector("#mit-login") as HTMLInputElement;
+const passwordElement = document.querySelector(
+  "#mit-password"
 ) as HTMLInputElement;
-const mitIdControlElement = document.getElementById("mit-id-control")!;
-const mitIdElement = document.getElementById("mit-id") as HTMLInputElement;
-const duoControlElement = document.getElementById("mit-duo-control")!;
-const duoIframeContainerElement = document.getElementById(
-  "mit-duo-iframe-container"
+const mitIdControlElement = document.querySelector(
+  "#mit-id-control"
+) as HTMLElement;
+const mitIdElement = document.querySelector("#mit-id") as HTMLInputElement;
+const duoControlElement = document.querySelector(
+  "#mit-duo-control"
+) as HTMLElement;
+const duoIframeContainerElement = document.querySelector(
+  "#mit-duo-iframe-container"
 )!;
-const duoCancelElement = document.getElementById("mit-duo-cancel")!;
-const downloadPasswordControlElement = document.getElementById(
-  "mit-downloadpassword-control"
+const duoCancelElement = document.querySelector("#mit-duo-cancel")!;
+const downloadPasswordControlElement = document.querySelector(
+  "#mit-downloadpassword-control"
+) as HTMLInputElement;
+const downloadPasswordElement = document.querySelector(
+  "#mit-downloadpassword"
+) as HTMLInputElement;
+const spkacControlElement = document.querySelector(
+  "#mit-spkac-control"
+) as HTMLElement;
+const spkacChallengeElement = document.querySelector(
+  "#mit-spkac-challenge"
+) as HTMLInputElement;
+const spkacChallengeShElement = document.querySelector(
+  "#mit-spkac-challenge-sh"
 )!;
-const downloadPasswordElement = document.getElementById(
-  "mit-downloadpassword"
+const spkacElement = document.querySelector("#mit-spkac") as HTMLInputElement;
+const spkacSubmitElement = document.querySelector("#mit-spkac-submit")!;
+const spkacCancelElement = document.querySelector("#mit-spkac-cancel")!;
+const generateElement = document.querySelector(
+  "#mit-generate"
 ) as HTMLInputElement;
-const spkacControlElement = document.getElementById("mit-spkac-control")!;
-const spkacChallengeElement = document.getElementById(
-  "mit-spkac-challenge"
-) as HTMLInputElement;
-const spkacChallengeShElement = document.getElementById(
-  "mit-spkac-challenge-sh"
-)!;
-const spkacElement = document.getElementById("mit-spkac") as HTMLInputElement;
-const spkacSubmitElement = document.getElementById("mit-spkac-submit")!;
-const spkacCancelElement = document.getElementById("mit-spkac-cancel")!;
-const generateElement = document.getElementById(
-  "mit-generate"
-) as HTMLInputElement;
-const statusElement = document.getElementById("mit-status")!;
+const statusElement = document.querySelector("#mit-status")!;
 
 function saveP12Binary(options: Options, p12Binary: Uint8Array): void {
   options.onStatus("Certificate ready");
@@ -70,15 +76,16 @@ function saveP12Binary(options: Options, p12Binary: Uint8Array): void {
 type Tree = { [key: string]: Tree } | string | null;
 
 function xmlToObject(node: Node): Tree {
-  if (node.childNodes.length) {
+  if (node.childNodes.length !== 0) {
     const obj: Tree = {};
     for (const child of node.childNodes) {
       obj[child.nodeName] = xmlToObject(child);
     }
+
     return obj;
-  } else {
-    return node.textContent;
   }
+
+  return node.textContent;
 }
 
 async function apiCall(cmd: { [key: string]: string }): Promise<Tree> {
@@ -100,8 +107,9 @@ async function apiCall(cmd: { [key: string]: string }): Promise<Tree> {
   );
   if (response.code !== 200) {
     console.log("Server error:", response.code, response.message);
-    throw new Error("Server error: " + response.code + " " + response.message);
+    throw new Error(`Server error: ${response.code} ${response.message!}`);
   }
+
   return xmlToObject(
     new DOMParser().parseFromString(response.body!, "text/xml")
   );
@@ -133,6 +141,7 @@ async function downloadCertServerKey(options: Options): Promise<void> {
     console.log("Session error:", startupReply);
     throw new Error("Session error: " + startupReply.error.text);
   }
+
   const sessionid = startupReply.startupresponse.sessionid;
 
   let p12Binary;
@@ -140,7 +149,7 @@ async function downloadCertServerKey(options: Options): Promise<void> {
     options.onStatus("Authenticating");
     const authenticateReply = (await apiCall({
       operation: "authenticate",
-      sessionid: sessionid,
+      sessionid,
       login: options.login,
       password: options.password,
       mitid: options.mitid,
@@ -153,7 +162,7 @@ async function downloadCertServerKey(options: Options): Promise<void> {
     options.onStatus("Downloading certificate");
     const downloadReply = (await apiCall({
       operation: "downloadcert",
-      sessionid: sessionid,
+      sessionid,
       downloadpassword: options.downloadpassword,
       expiration: options.expiration,
       force: options.force,
@@ -169,10 +178,7 @@ async function downloadCertServerKey(options: Options): Promise<void> {
     );
   } finally {
     options.onStatus("Closing session");
-    (await apiCall({
-      operation: "finish",
-      sessionid: sessionid,
-    })) as { finishresponse: null } | APIError;
+    await apiCall({ operation: "finish", sessionid });
   }
 
   saveP12Binary(options, p12Binary);
@@ -188,12 +194,12 @@ const caHeaders = {
 function parseDuoDocument(
   doc: Document
 ): { host: string; sig_request: string; post_action: string } | null {
-  const iframe = doc.getElementById("duo_iframe");
+  const iframe = doc.querySelector("#duo_iframe");
   if (iframe === null) return null;
   const script = iframe.previousElementSibling;
   if (!(script instanceof HTMLScriptElement)) return null;
-  const m = script.text.match(
-    /^\s*Duo\.init\(\{\s*'host':\s*"([^\\"]*)",\s*'sig_request':\s*"([^\\"]*)",\s*'post_action':\s*"([^\\"]*)"\s*\}\);\s*$/
+  const m = /^\s*Duo\.init\(\{\s*'host':\s*"([^\\"]*)",\s*'sig_request':\s*"([^\\"]*)",\s*'post_action':\s*"([^\\"]*)"\s*\}\);\s*$/.exec(
+    script.text
   );
   if (m === null) return null;
   const [, host, sig_request, post_action] = m;
@@ -212,8 +218,9 @@ async function start(): Promise<http.Response> {
   );
   if (response.code !== 200) {
     console.log("Server error:", response);
-    throw new Error(`Server error: ${response.code} ${response.message}`);
+    throw new Error(`Server error: ${response.code} ${response.message!}`);
   }
+
   return response;
 }
 
@@ -259,9 +266,9 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
   if (loginResponse.code === 200) {
     const loginDoc = new DOMParser().parseFromString(
       loginResponse.body!,
-      loginResponse
-        .getField("Content-Type")!
-        .match(/^[^;]*/)![0] as SupportedType
+      /^[^;]*/.exec(
+        loginResponse.getField("Content-Type")!
+      )![0] as SupportedType
     );
     const duoParams = parseDuoDocument(loginDoc);
     if (duoParams === null) {
@@ -273,7 +280,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
     let duoResponse: HTMLFormElement;
     const iframe = document.createElement("iframe");
     try {
-      duoIframeContainerElement.appendChild(iframe);
+      duoIframeContainerElement.append(iframe);
       duoControlElement.hidden = false;
       duoResponse = await new Promise((resolve, reject) => {
         function cancel(event: Event): void {
@@ -340,7 +347,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
   ) {
     console.log("Server error:", loginResponse);
     throw new Error(
-      `Server error: ${loginResponse.code} ${loginResponse.message}`
+      `Server error: ${loginResponse.code} ${loginResponse.message!}`
     );
   }
 
@@ -357,18 +364,18 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
   if (formResponse.code !== 200) {
     console.log("Server error:", formResponse);
     throw new Error(
-      `Server error: ${formResponse.code} ${formResponse.message}`
+      `Server error: ${formResponse.code} ${formResponse.message!}`
     );
   }
 
   const doc = new DOMParser().parseFromString(
     formResponse.body!,
-    formResponse.getField("Content-Type")!.match(/^[^;]*/)![0] as SupportedType
+    /^[^;]*/.exec(formResponse.getField("Content-Type")!)![0] as SupportedType
   );
   const [userkey] = doc.getElementsByName("userkey");
   const challenge = userkey.getAttribute("challenge");
   if (challenge === null) throw new Error("Missing challenge");
-  const life = (doc.getElementById("life") as HTMLInputElement).value;
+  const life = (doc.querySelector("#life") as HTMLInputElement).value;
 
   const spkac = await options.getSpkac(challenge);
 
@@ -399,7 +406,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
   ) {
     console.log("Server error:", spkacResponse0);
     throw new Error(
-      `Server error: ${spkacResponse0.code} ${spkacResponse0.message}`
+      `Server error: ${spkacResponse0.code} ${spkacResponse0.message!}`
     );
   }
 
@@ -416,7 +423,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
   if (spkacResponse2.code !== 200) {
     console.log("Server error:", spkacResponse2);
     throw new Error(
-      `Server error: ${spkacResponse2.code} ${spkacResponse2.message}`
+      `Server error: ${spkacResponse2.code} ${spkacResponse2.message!}`
     );
   }
 
@@ -471,6 +478,7 @@ async function downloadCertManual(options: Options): Promise<void> {
             if (spkac.startsWith("SPKAC=")) {
               spkac = spkac.slice("SPKAC=".length);
             }
+
             resolve(spkac);
           }
 
@@ -500,16 +508,20 @@ async function downloadCertManual(options: Options): Promise<void> {
   );
 }
 
-function downloadCert(options: Options): Promise<void> {
+async function downloadCert(options: Options): Promise<void> {
   if (options.generate === "client") {
     return downloadCertClientKey(options);
-  } else if (options.generate === "server") {
-    return downloadCertServerKey(options);
-  } else if (options.generate === "manual") {
-    return downloadCertManual(options);
-  } else {
-    throw new Error("Unexpected value for generate");
   }
+
+  if (options.generate === "server") {
+    return downloadCertServerKey(options);
+  }
+
+  if (options.generate === "manual") {
+    return downloadCertManual(options);
+  }
+
+  throw new Error("Unexpected value for generate");
 }
 
 declare global {
@@ -518,7 +530,7 @@ declare global {
   }
 }
 
-window.certAssistMitPing = async function certAssistMitPing() {
+window.certAssistMitPing = async () => {
   await start();
 };
 
@@ -528,7 +540,7 @@ function invalid(): boolean {
     !loginElement.value ||
     !passwordElement.value ||
     (generateElement.value === "server" &&
-      !mitIdElement.value.match(/^9\d{8}$/)) ||
+      !/^9\d{8}$/.test(mitIdElement.value)) ||
     (generateElement.value !== "manual" && !downloadPasswordElement.value)
   );
 }
@@ -562,11 +574,11 @@ async function submit(event: Event): Promise<void> {
       alwaysreuse: "1",
       generate: generateElement.value,
       onStatus: (status: string) => {
-        statusElement.textContent += status + "\n";
+        statusElement.append(status, "\n");
       },
     });
   } catch (error) {
-    statusElement.textContent += error + "\n";
+    statusElement.append(error, "\n");
     throw error;
   } finally {
     working = false;
@@ -588,6 +600,6 @@ mitIdElement.addEventListener("input", validate);
 downloadPasswordElement.addEventListener("change", validate);
 downloadPasswordElement.addEventListener("input", validate);
 generateElement.addEventListener("change", validate);
-document.getElementById("mit-form")!.addEventListener("submit", submit);
+document.querySelector("#mit-form")!.addEventListener("submit", submit);
 
 validate();

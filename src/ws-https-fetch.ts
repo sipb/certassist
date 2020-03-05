@@ -15,11 +15,12 @@ async function wsHttpsFetch(
     sessionCache = forge.tls.createSessionCache({}, 1);
     sessionCaches.set(wsUrl, sessionCache);
   }
+
   let done = false;
   const buffer = forge.util.createBuffer();
   const response = http.createResponse();
   return new Promise((resolve, reject) => {
-    const [, hostname] = request.getField("Host")!.match(/^([^:]*)(?::\d+)?$/)!;
+    const [, hostname] = /^([^:]*)(?::\d+)?$/.exec(request.getField("Host")!)!;
     const tls = forge.tls.createConnection({
       server: false,
       caStore,
@@ -27,7 +28,7 @@ async function wsHttpsFetch(
       virtualHost: hostname,
       verify: (_connection, verified, depth, certs) => {
         if (depth === 0) {
-          const cn = certs[0].subject.getField("CN").value;
+          const cn: string = certs[0].subject.getField("CN").value;
           if (cn !== hostname) {
             verified = {
               alert: forge.tls.Alert.Description.bad_certificate,
@@ -35,16 +36,17 @@ async function wsHttpsFetch(
             };
           }
         }
+
         return verified;
       },
       connected: connection =>
-        connection.prepare(request.toString() + request.body),
+        connection.prepare(request.toString() + request.body!),
       tlsDataReady: connection => {
         const bytes = connection.tlsData.getBytes();
         // Avoid empty messages, which some websockify
         // versions misinterpret as closing the connection
         // (https://github.com/novnc/websockify/issues/312).
-        if (bytes.length) {
+        if (bytes.length !== 0) {
           try {
             if (ws.protocol === "base64") ws.send(btoa(bytes));
             else ws.send(forge.util.binary.raw.decode(bytes));
@@ -63,6 +65,7 @@ async function wsHttpsFetch(
           if (!response.headerReceived) {
             response.readHeader(buffer);
           }
+
           if (response.headerReceived && !response.bodyReceived) {
             if (response.readBody(buffer)) {
               done = true;
@@ -81,7 +84,7 @@ async function wsHttpsFetch(
         }
       },
       error: (_connection, error) => {
-        console.log("TLS error: ", error);
+        console.log("TLS error:", error);
         if (!done) {
           done = true;
           reject(new Error("TLS error: " + error.message));

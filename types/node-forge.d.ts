@@ -55,7 +55,7 @@ declare module "node-forge/lib/http" {
     body?: forge.Bytes;
     headers?:
       | { [name: string]: string }
-      | readonly { [name: string]: string }[];
+      | ReadonlyArray<{ [name: string]: string }>;
   }): Request;
 
   interface Response extends Header {

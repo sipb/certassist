@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/filename-case */
+
 declare module "@duosecurity/duo_web/js/Duo-Web-v2" {
   function init(options: {
     iframe: string | HTMLIFrameElement;

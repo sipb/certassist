@@ -3,7 +3,7 @@ function saveUrl(url: string, filename: string): void {
   a.href = url;
   a.download = filename;
   a.style.display = "none";
-  document.body.appendChild(a);
+  document.body.append(a);
   a.click();
   document.body.removeChild(a);
 }

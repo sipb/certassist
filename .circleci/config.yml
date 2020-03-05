@@ -13,12 +13,10 @@ jobs:
             - run: npm ci
       - run: npm run build
       - run: npx --no-install tsc
-      - run: npx --no-install eslint --ext js,ts .
+      - run: npx --no-install xo
       - run: >
           npx --no-install prettier --check
           '**/*.css'
           '**/*.ejs'
-          '**/*.js'
           '**/*.json'
-          '**/*.ts'
           '**/*.yml'

@@ -21,7 +21,7 @@ function generateSpkac(
               asn1.Class.UNIVERSAL,
               asn1.Type.OID,
               false,
-              asn1.oidToDer(forge.pki.oids["md5WithRSAEncryption"]).getBytes()
+              asn1.oidToDer(forge.pki.oids.md5WithRSAEncryption).getBytes()
             ),
             asn1.create(asn1.Class.UNIVERSAL, asn1.Type.NULL, false, ""),
           ]),
