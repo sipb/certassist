@@ -77,12 +77,12 @@ type Tree = { [key: string]: Tree } | string | null;
 
 function xmlToObject(node: Node): Tree {
   if (node.childNodes.length !== 0) {
-    const obj: Tree = {};
+    const tree: Tree = {};
     for (const child of node.childNodes) {
-      obj[child.nodeName] = xmlToObject(child);
+      tree[child.nodeName] = xmlToObject(child);
     }
 
-    return obj;
+    return tree;
   }
 
   return node.textContent;
@@ -198,7 +198,7 @@ function parseDuoDocument(
   if (iframe === null) return null;
   const script = iframe.previousElementSibling;
   if (!(script instanceof HTMLScriptElement)) return null;
-  const m = /^\s*Duo\.init\(\{\s*'host':\s*"([^\\"]*)",\s*'sig_request':\s*"([^\\"]*)",\s*'post_action':\s*"([^\\"]*)"\s*\}\);\s*$/.exec(
+  const m = /^\s*Duo\.init\({\s*'host':\s*"([^\\"]*)",\s*'sig_request':\s*"([^\\"]*)",\s*'post_action':\s*"([^\\"]*)"\s*}\);\s*$/.exec(
     script.text
   );
   if (m === null) return null;
@@ -270,8 +270,8 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
         loginResponse.getField("Content-Type")!
       )![0] as SupportedType
     );
-    const duoParams = parseDuoDocument(loginDoc);
-    if (duoParams === null) {
+    const duoParameters = parseDuoDocument(loginDoc);
+    if (duoParameters === null) {
       console.log("Server error:", loginResponse);
       throw new Error("Server error: Unrecognized response");
     }
@@ -292,7 +292,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
         duoCancelElement.addEventListener("click", cancel);
 
         Duo.init({
-          ...duoParams,
+          ...duoParameters,
           iframe,
           submit_callback: duoResponse => {
             duoCancelElement.removeEventListener("click", cancel);
@@ -302,7 +302,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
       });
     } finally {
       duoControlElement.hidden = true;
-      duoIframeContainerElement.removeChild(iframe);
+      iframe.remove();
     }
 
     options.onStatus("Finishing Duo authentication");
@@ -310,15 +310,15 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
       wsUrl,
       http.createRequest({
         method: duoResponse.method,
-        path: duoParams.post_action,
+        path: duoParameters.post_action,
         headers: {
           ...headers,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: [...duoResponse.elements]
-          .map(e => [
-            (e as HTMLInputElement).name,
-            (e as HTMLInputElement).value,
+          .map(element => [
+            (element as HTMLInputElement).name,
+            (element as HTMLInputElement).value,
           ])
           .map(p => p.map(x => encodeURIComponent(x)).join("="))
           .join("&"),
@@ -450,6 +450,7 @@ async function downloadCertClientKey(options: Options): Promise<void> {
     options.downloadpassword,
     {
       algorithm: "3des",
+      // eslint-disable-next-line unicorn/string-content
       friendlyName: `${options.login}'s MIT Certificate`,
     }
   );
@@ -465,6 +466,7 @@ async function downloadCertManual(options: Options): Promise<void> {
     getSpkac: async challenge => {
       spkacChallengeElement.value = challenge;
       spkacChallengeShElement.textContent =
+        // eslint-disable-next-line unicorn/string-content
         "'" + challenge.replace("'", "'\\''") + "'";
       try {
         spkacControlElement.hidden = false;

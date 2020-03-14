@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/prevent-abbreviations */
+
 declare module "node-forge" {
   namespace oids {
     const data: OID;

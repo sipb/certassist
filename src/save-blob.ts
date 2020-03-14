@@ -5,13 +5,13 @@ function saveUrl(url: string, filename: string): void {
   a.style.display = "none";
   document.body.append(a);
   a.click();
-  document.body.removeChild(a);
+  a.remove();
 }
 
 const useObjectUrl =
   URL.createObjectURL &&
   // https://crbug.com/733304
-  !/ Android 7\..* Chrome\/5[0-9]\./.test(window.navigator.userAgent);
+  !/ Android 7\..* Chrome\/5\d\./.test(window.navigator.userAgent);
 
 const saveBlob: (blob: Blob, filename: string) => void = window.navigator
   .msSaveOrOpenBlob
