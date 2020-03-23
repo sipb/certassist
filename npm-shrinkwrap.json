@@ -5694,6 +5694,11 @@
       "resolved": "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz",
       "integrity": "sha1-TkMekrEalzFjaqH5yNHMvP2reN8="
     },
+    "js-polyfills": {
+      "version": "0.1.42",
+      "resolved": "https://registry.npmjs.org/js-polyfills/-/js-polyfills-0.1.42.tgz",
+      "integrity": "sha1-XUhJArNh489gH9I60PMLr8yT8Ug="
+    },
     "js-tokens": {
       "version": "4.0.0",
       "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz",
