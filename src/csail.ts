@@ -117,7 +117,6 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
     options.downloadpassword,
     {
       algorithm: "3des",
-      // eslint-disable-next-line unicorn/string-content
       friendlyName: `${options.login}'s CSAIL Certificate`,
     }
   );

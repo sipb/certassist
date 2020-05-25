@@ -41,9 +41,10 @@
     "@types/mini-css-extract-plugin": "^0.9.1",
     "@types/node-forge": "^0.9.2",
     "@types/webpack": "^4.41.7",
+    "eslint-config-xo-typescript": "^0.29.0",
     "prettier": "^1.19.1",
     "typescript": "^3.8.3",
-    "xo": "^0.28.0"
+    "xo": "^0.30.0"
   },
   "babel": {
     "presets": [

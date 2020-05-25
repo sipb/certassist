@@ -35,9 +35,9 @@ declare module "node-forge/lib/http" {
 
   interface Header {
     fields: { [name: string]: string[] };
-    setField(name: string, value: string): void;
-    appendField(name: string, value: string): void;
-    getField(name: string, index?: number): string | null;
+    setField: (name: string, value: string) => void;
+    appendField: (name: string, value: string) => void;
+    getField: (name: string, index?: number) => string | null;
   }
 
   interface Request extends Header {
@@ -46,8 +46,8 @@ declare module "node-forge/lib/http" {
     path: string | null;
     body: forge.Bytes | null;
     bodyDeflated: boolean;
-    addCookie(cookie: Cookie): void;
-    toString(): string;
+    addCookie: (cookie: Cookie) => void;
+    toString: () => string;
   }
 
   function createRequest(options: {
@@ -67,10 +67,10 @@ declare module "node-forge/lib/http" {
     body: forge.Bytes | null;
     headerReceived: boolean;
     bodyReceived: boolean;
-    readHeader(b: forge.util.ByteBuffer): boolean;
-    readBody(b: forge.util.ByteBuffer): boolean;
-    getCookies(): Cookie[];
-    toString(): string;
+    readHeader: (b: forge.util.ByteBuffer) => boolean;
+    readBody: (b: forge.util.ByteBuffer) => boolean;
+    getCookies: () => Cookie[];
+    toString: () => string;
   }
 
   function createResponse(): Response;

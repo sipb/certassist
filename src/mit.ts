@@ -225,7 +225,7 @@ async function start(): Promise<http.Response> {
 }
 
 interface ScrapeCertDerOptions extends Options {
-  getSpkac(challenge: string): Promise<string>;
+  getSpkac: (challenge: string) => Promise<string>;
 }
 
 async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
@@ -450,7 +450,6 @@ async function downloadCertClientKey(options: Options): Promise<void> {
     options.downloadpassword,
     {
       algorithm: "3des",
-      // eslint-disable-next-line unicorn/string-content
       friendlyName: `${options.login}'s MIT Certificate`,
     }
   );
@@ -466,7 +465,6 @@ async function downloadCertManual(options: Options): Promise<void> {
     getSpkac: async challenge => {
       spkacChallengeElement.value = challenge;
       spkacChallengeShElement.textContent =
-        // eslint-disable-next-line unicorn/string-content
         "'" + challenge.replace("'", "'\\''") + "'";
       try {
         spkacControlElement.hidden = false;
@@ -528,7 +526,7 @@ async function downloadCert(options: Options): Promise<void> {
 
 declare global {
   interface Window {
-    certAssistMitPing(): Promise<void>;
+    certAssistMitPing: () => Promise<void>;
   }
 }
 
