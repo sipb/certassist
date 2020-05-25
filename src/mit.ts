@@ -24,6 +24,7 @@ const wsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
 }/ws/mit`;
 
 let working = false;
+const formElement = document.querySelector("#mit-form") as HTMLFormElement;
 const submitElement = document.querySelector("#mit-submit") as HTMLInputElement;
 const loginElement = document.querySelector("#mit-login") as HTMLInputElement;
 const passwordElement = document.querySelector(
@@ -46,9 +47,9 @@ const downloadPasswordControlElement = document.querySelector(
 const downloadPasswordElement = document.querySelector(
   "#mit-downloadpassword"
 ) as HTMLInputElement;
-const spkacControlElement = document.querySelector(
-  "#mit-spkac-control"
-) as HTMLElement;
+const spkacFormElement = document.querySelector(
+  "#mit-spkac-form"
+) as HTMLFormElement;
 const spkacChallengeElement = document.querySelector(
   "#mit-spkac-challenge"
 ) as HTMLInputElement;
@@ -56,7 +57,6 @@ const spkacChallengeShElement = document.querySelector(
   "#mit-spkac-challenge-sh"
 )!;
 const spkacElement = document.querySelector("#mit-spkac") as HTMLInputElement;
-const spkacSubmitElement = document.querySelector("#mit-spkac-submit")!;
 const spkacCancelElement = document.querySelector("#mit-spkac-cancel")!;
 const generateElement = document.querySelector(
   "#mit-generate"
@@ -469,12 +469,13 @@ async function downloadCertManual(options: Options): Promise<void> {
       spkacChallengeShElement.textContent =
         "'" + challenge.replace("'", "'\\''") + "'";
       try {
-        spkacControlElement.hidden = false;
+        formElement.hidden = true;
+        spkacFormElement.hidden = false;
         options.onStatus("Awaiting manual SPKAC generation");
         return await new Promise((resolve, reject) => {
           function submit(event: Event): void {
             event.preventDefault();
-            spkacSubmitElement.removeEventListener("click", submit);
+            spkacFormElement.removeEventListener("submit", submit);
             spkacCancelElement.removeEventListener("click", cancel);
             let spkac = spkacElement.value;
             if (spkac.startsWith("SPKAC=")) {
@@ -486,16 +487,17 @@ async function downloadCertManual(options: Options): Promise<void> {
 
           function cancel(event: Event): void {
             event.preventDefault();
-            spkacSubmitElement.removeEventListener("click", submit);
+            spkacFormElement.removeEventListener("submit", submit);
             spkacCancelElement.removeEventListener("click", cancel);
             reject(new Error("Manual SPKAC generation cancelled"));
           }
 
-          spkacSubmitElement.addEventListener("click", submit);
+          spkacFormElement.addEventListener("submit", submit);
           spkacCancelElement.addEventListener("click", cancel);
         });
       } finally {
-        spkacControlElement.hidden = true;
+        spkacFormElement.hidden = true;
+        formElement.hidden = false;
         spkacElement.value = "";
       }
     },
@@ -536,26 +538,31 @@ window.certAssistMitPing = async () => {
   await start();
 };
 
-function invalid(): boolean {
-  return (
-    working ||
-    !loginElement.value ||
-    !passwordElement.value ||
-    (generateElement.value === "server" &&
-      !/^9\d{8}$/.test(mitIdElement.value)) ||
-    (generateElement.value !== "manual" && !downloadPasswordElement.value)
-  );
-}
-
 function validate(): void {
-  mitIdControlElement.hidden = generateElement.value !== "server";
-  downloadPasswordControlElement.hidden = generateElement.value === "manual";
-  submitElement.disabled = invalid();
+  if (generateElement.value === "server") {
+    mitIdControlElement.hidden = false;
+    mitIdElement.required = true;
+    mitIdElement.pattern = "9\\d{8}";
+  } else {
+    mitIdControlElement.hidden = true;
+    mitIdElement.required = false;
+    mitIdElement.pattern = ".*";
+  }
+
+  if (generateElement.value === "manual") {
+    downloadPasswordControlElement.hidden = true;
+    downloadPasswordElement.required = false;
+  } else {
+    downloadPasswordControlElement.hidden = false;
+    downloadPasswordElement.required = true;
+  }
+
+  submitElement.disabled = working;
 }
 
 async function submit(event: Event): Promise<void> {
   event.preventDefault();
-  if (invalid()) return;
+  if (working) return;
   working = true;
   submitElement.disabled = true;
   loginElement.disabled = true;
@@ -602,6 +609,6 @@ mitIdElement.addEventListener("input", validate);
 downloadPasswordElement.addEventListener("change", validate);
 downloadPasswordElement.addEventListener("input", validate);
 generateElement.addEventListener("change", validate);
-document.querySelector("#mit-form")!.addEventListener("submit", submit);
+formElement.addEventListener("submit", submit);
 
 validate();

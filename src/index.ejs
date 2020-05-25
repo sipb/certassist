@@ -18,15 +18,21 @@
       <form id="mit-form" action="blob:">
         <div class="control">
           <label for="mit-login">Kerberos username:</label>
-          <input type="text" id="mit-login" autofocus />
+          <input type="text" id="mit-login" autofocus required />
         </div>
         <div class="control">
           <label for="mit-password">Kerberos password:</label>
-          <input type="password" id="mit-password" />
+          <input type="password" id="mit-password" required />
         </div>
         <div class="control" id="mit-id-control" hidden>
           <label for="mit-id">MIT ID number:</label>
-          <input type="text" id="mit-id" />
+          <input
+            type="text"
+            id="mit-id"
+            inputmode="numeric"
+            required
+            pattern="9\d{8}"
+          />
         </div>
         <div id="mit-duo-control" hidden>
           <div class="control" id="mit-duo-iframe-container">
@@ -38,37 +44,7 @@
         </div>
         <div class="control" id="mit-downloadpassword-control">
           <label for="mit-downloadpassword">Download password:</label>
-          <input type="password" id="mit-downloadpassword" />
-        </div>
-        <div id="mit-spkac-control" hidden>
-          <div class="control">
-            <label for="mit-spkac-challenge">SPKAC challenge:</label>
-            <input type="text" id="mit-spkac-challenge" value="" readonly />
-          </div>
-          <div class="control"><label></label> Generate a private key:</div>
-          <div class="control">
-            <label></label>
-            <code>openssl genrsa -out privkey.pem 2048</code>
-          </div>
-          <div class="control">
-            <label></label>
-            Then paste the output of the following command below:
-          </div>
-          <div class="control">
-            <label></label>
-            <code>
-              openssl spkac -key privkey.pem -challenge
-              <span id="mit-spkac-challenge-sh">''</span>
-            </code>
-          </div>
-          <div class="control">
-            <label for="mit-spkac">SPKAC:</label>
-            <input type="text" id="mit-spkac" />
-          </div>
-          <div class="control">
-            <label></label> <a id="mit-spkac-submit">Submit</a>
-            <a id="mit-spkac-cancel">Cancel</a>
-          </div>
+          <input type="password" id="mit-downloadpassword" required />
         </div>
         <input type="checkbox" id="mit-advanced" />
         <div class="control">
@@ -90,28 +66,59 @@
         </div>
         <div class="control">
           <label></label>
-          <button type="submit" id="mit-submit" disabled="disabled">
+          <button type="submit" id="mit-submit">
             <i class="fa fa-download"></i> Go
           </button>
         </div>
         <pre id="mit-status"></pre>
       </form>
-      <form id="csail-form" action="blob:">
+      <form id="mit-spkac-form" hidden>
         <div class="control">
-          <label for="csail-login">CSAIL username:</label>
-          <input type="text" id="csail-login" />
+          <label for="mit-spkac-challenge">SPKAC challenge:</label>
+          <input type="text" id="mit-spkac-challenge" value="" readonly />
         </div>
+        <div class="control"><label></label> Generate a private key:</div>
         <div class="control">
-          <label for="csail-password">CSAIL password:</label>
-          <input type="password" id="csail-password" />
-        </div>
-        <div class="control">
-          <label for="csail-downloadpassword">Download password:</label>
-          <input type="password" id="csail-downloadpassword" />
+          <label></label>
+          <code>openssl genrsa -out privkey.pem 2048</code>
         </div>
         <div class="control">
           <label></label>
-          <button type="submit" id="csail-submit" disabled="disabled">
+          Then paste the output of the following command below:
+        </div>
+        <div class="control">
+          <label></label>
+          <code>
+            openssl spkac -key privkey.pem -challenge
+            <span id="mit-spkac-challenge-sh">''</span>
+          </code>
+        </div>
+        <div class="control">
+          <label for="mit-spkac">SPKAC:</label>
+          <input type="text" id="mit-spkac" required />
+        </div>
+        <div class="control">
+          <label></label>
+          <button type="submit" id="mit-spkac-submit">Submit</button>
+          <a id="mit-spkac-cancel">Cancel</a>
+        </div>
+      </form>
+      <form id="csail-form" action="blob:">
+        <div class="control">
+          <label for="csail-login">CSAIL username:</label>
+          <input type="text" id="csail-login" required />
+        </div>
+        <div class="control">
+          <label for="csail-password">CSAIL password:</label>
+          <input type="password" id="csail-password" required />
+        </div>
+        <div class="control">
+          <label for="csail-downloadpassword">Download password:</label>
+          <input type="password" id="csail-downloadpassword" required />
+        </div>
+        <div class="control">
+          <label></label>
+          <button type="submit" id="csail-submit">
             <i class="fa fa-download"></i> Go
           </button>
         </div>

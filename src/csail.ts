@@ -136,22 +136,13 @@ const downloadPasswordElement = document.querySelector(
 ) as HTMLInputElement;
 const statusElement = document.querySelector("#csail-status")!;
 
-function invalid(): boolean {
-  return (
-    working ||
-    !loginElement.value ||
-    !passwordElement.value ||
-    !downloadPasswordElement.value
-  );
-}
-
 function validate(): void {
-  submitElement.disabled = invalid();
+  submitElement.disabled = working;
 }
 
 async function submit(event: Event): Promise<void> {
   event.preventDefault();
-  if (invalid()) return;
+  if (working) return;
   working = true;
   submitElement.disabled = true;
   loginElement.disabled = true;

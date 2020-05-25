@@ -38,13 +38,10 @@ code {
   color: #000;
 }
 
-form {
+#mit-tab:not(:checked) ~ #mit-form,
+#mit-tab:not(:checked) ~ #mit-spkac-form,
+#csail-tab:not(:checked) ~ #csail-form {
   display: none;
-}
-
-#mit-tab:checked ~ #mit-form,
-#csail-tab:checked ~ #csail-form {
-  display: block;
 }
 
 form {
@@ -53,7 +50,8 @@ form {
   padding: 1em;
 }
 
-#mit-form {
+#mit-form,
+#mit-spkac-form {
   border-top-left-radius: 0;
 }
 
@@ -91,7 +89,8 @@ form {
   cursor: pointer;
 }
 
-.control > button[type="submit"]:disabled {
+.control > button[type="submit"]:disabled,
+form:invalid .control > button[type="submit"] {
   opacity: 0.4;
   cursor: not-allowed;
 }
@@ -105,7 +104,6 @@ form {
 }
 
 #mit-duo-cancel,
-#mit-spkac-submit,
 #mit-spkac-cancel {
   line-height: 3em;
   color: #fff;
