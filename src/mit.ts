@@ -76,16 +76,16 @@ function saveP12Binary(options: Options, p12Binary: Uint8Array): void {
 type Tree = { [key: string]: Tree } | string | null;
 
 function xmlToObject(node: Node): Tree {
-  if (node.childNodes.length !== 0) {
-    const tree: Tree = {};
-    for (const child of node.childNodes) {
+  const tree: Tree = {};
+  let leaf = true;
+  for (const child of node.childNodes) {
+    if (!(child instanceof Text)) {
+      leaf = false;
       tree[child.nodeName] = xmlToObject(child);
     }
-
-    return tree;
   }
 
-  return node.textContent;
+  return leaf ? node.textContent : tree;
 }
 
 async function apiCall(cmd: { [key: string]: string }): Promise<Tree> {
