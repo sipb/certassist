@@ -76,7 +76,7 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
         ["spkac", spkac],
         ["Submit", "Submit"],
       ]
-        .map(p => p.map(x => encodeURIComponent(x)).join("="))
+        .map((p) => p.map((x) => encodeURIComponent(x)).join("="))
         .join("&"),
     }),
     caStore
@@ -165,7 +165,7 @@ async function submit(event: Event): Promise<void> {
       login,
       password: passwordElement.value,
       downloadpassword: downloadPasswordElement.value,
-      onStatus: status => {
+      onStatus: (status) => {
         statusElement.append(status, "\n");
       },
     });

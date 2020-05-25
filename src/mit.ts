@@ -100,7 +100,9 @@ async function apiCall(cmd: { [key: string]: string }): Promise<Tree> {
         Connection: "close",
       },
       body: Object.keys(cmd)
-        .map(key => [key, cmd[key]].map(x => encodeURIComponent(x)).join("="))
+        .map((key) =>
+          [key, cmd[key]].map((x) => encodeURIComponent(x)).join("=")
+        )
         .join("&"),
     }),
     caStore
@@ -257,7 +259,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
         ["password", options.password],
         ["submit", "Next+>>"],
       ]
-        .map(p => p.map(x => encodeURIComponent(x)).join("="))
+        .map((p) => p.map((x) => encodeURIComponent(x)).join("="))
         .join("&"),
     }),
     caStore
@@ -294,7 +296,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
         Duo.init({
           ...duoParameters,
           iframe,
-          submit_callback: duoResponse => {
+          submit_callback: (duoResponse) => {
             duoCancelElement.removeEventListener("click", cancel);
             resolve(duoResponse);
           },
@@ -316,11 +318,11 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: [...duoResponse.elements]
-          .map(element => [
+          .map((element) => [
             (element as HTMLInputElement).name,
             (element as HTMLInputElement).value,
           ])
-          .map(p => p.map(x => encodeURIComponent(x)).join("="))
+          .map((p) => p.map((x) => encodeURIComponent(x)).join("="))
           .join("&"),
       }),
       caStore
@@ -395,7 +397,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
         ["Submit", "Next+>>"],
         ["userkey", spkac],
       ]
-        .map(p => p.map(x => encodeURIComponent(x)).join("="))
+        .map((p) => p.map((x) => encodeURIComponent(x)).join("="))
         .join("&"),
     }),
     caStore
@@ -434,7 +436,7 @@ async function downloadCertClientKey(options: Options): Promise<void> {
   let keyPair: forge.pki.rsa.KeyPair;
   const der = await scrapeCertDer({
     ...options,
-    getSpkac: async challenge => {
+    getSpkac: async (challenge) => {
       options.onStatus("Generating key pair");
       keyPair = await new Promise<forge.pki.rsa.KeyPair>((resolve, reject) =>
         forge.pki.rsa.generateKeyPair({ bits: 2048 }, (err, keyPair) =>
@@ -462,7 +464,7 @@ async function downloadCertClientKey(options: Options): Promise<void> {
 async function downloadCertManual(options: Options): Promise<void> {
   const der = await scrapeCertDer({
     ...options,
-    getSpkac: async challenge => {
+    getSpkac: async (challenge) => {
       spkacChallengeElement.value = challenge;
       spkacChallengeShElement.textContent =
         "'" + challenge.replace("'", "'\\''") + "'";

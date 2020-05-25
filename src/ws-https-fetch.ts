@@ -39,9 +39,9 @@ async function wsHttpsFetch(
 
         return verified;
       },
-      connected: connection =>
+      connected: (connection) =>
         connection.prepare(request.toString() + request.body!),
-      tlsDataReady: connection => {
+      tlsDataReady: (connection) => {
         const bytes = connection.tlsData.getBytes();
         // Avoid empty messages, which some websockify
         // versions misinterpret as closing the connection
@@ -59,7 +59,7 @@ async function wsHttpsFetch(
           }
         }
       },
-      dataReady: connection => {
+      dataReady: (connection) => {
         buffer.putBytes(connection.data.getBytes());
         if (!done && !response.bodyReceived) {
           if (!response.headerReceived) {
@@ -99,12 +99,12 @@ async function wsHttpsFetch(
       console.log("Closed WebSocket");
       tls.close();
     });
-    ws.addEventListener("message", event => {
+    ws.addEventListener("message", (event) => {
       if (ws.protocol === "base64") tls.process(atob(event.data));
       else
         tls.process(forge.util.binary.raw.encode(new Uint8Array(event.data)));
     });
-    ws.addEventListener("error", event => {
+    ws.addEventListener("error", (event) => {
       console.log("WebSocket error:", event);
       if (!done) {
         done = true;
