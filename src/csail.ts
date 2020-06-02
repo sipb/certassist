@@ -4,7 +4,7 @@ import http from "node-forge/lib/http";
 import wsHttpsFetch from "./ws-https-fetch";
 import generateSpkac from "./generate-spkac";
 import saveBlob from "./save-blob";
-import caStore from "./add-trust-store";
+import caStore from "./ca-store";
 
 const wsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
   window.location.host

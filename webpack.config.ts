@@ -58,7 +58,9 @@ const config: webpack.Configuration = {
       },
     ],
   },
-  node: false,
+  node: {
+    fs: "empty",
+  },
   devtool: "source-map",
 };
 
