@@ -18,7 +18,7 @@
       <form id="mit-form" action="blob:">
         <div class="control">
           <label for="mit-login">Kerberos username:</label>
-          <input type="text" id="mit-login" autofocus required />
+          <input id="mit-login" autofocus required />
         </div>
         <div class="control">
           <label for="mit-password">Kerberos password:</label>
@@ -26,13 +26,7 @@
         </div>
         <div class="control" id="mit-id-control" hidden>
           <label for="mit-id">MIT ID number:</label>
-          <input
-            type="text"
-            id="mit-id"
-            inputmode="numeric"
-            required
-            pattern="9\d{8}"
-          />
+          <input id="mit-id" inputmode="numeric" required pattern="9\d{8}" />
         </div>
         <div id="mit-duo-control" hidden>
           <div class="control" id="mit-duo-iframe-container">
@@ -75,7 +69,7 @@
       <form id="mit-spkac-form" hidden>
         <div class="control">
           <label for="mit-spkac-challenge">SPKAC challenge:</label>
-          <input type="text" id="mit-spkac-challenge" value="" readonly />
+          <input id="mit-spkac-challenge" value="" readonly />
         </div>
         <div class="control"><label></label> Generate a private key:</div>
         <div class="control">
@@ -95,7 +89,7 @@
         </div>
         <div class="control">
           <label for="mit-spkac">SPKAC:</label>
-          <input type="text" id="mit-spkac" required />
+          <input id="mit-spkac" required />
         </div>
         <div class="control">
           <label></label>
@@ -106,7 +100,7 @@
       <form id="csail-form" action="blob:">
         <div class="control">
           <label for="csail-login">CSAIL username:</label>
-          <input type="text" id="csail-login" required />
+          <input id="csail-login" required />
         </div>
         <div class="control">
           <label for="csail-password">CSAIL password:</label>

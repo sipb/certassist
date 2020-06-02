@@ -68,7 +68,7 @@ form {
   box-sizing: border-box;
 }
 
-.control > input[type="text"],
+.control > input:not([type]),
 .control > input[type="password"] {
   margin: 0.25em 0;
   padding: 0.5em 0.6em;
@@ -155,7 +155,7 @@ form pre:not(:empty) {
     width: 100%;
   }
 
-  .control > input[type="text"],
+  .control > input:not([type]),
   .control > input[type="password"],
   #mit-duo-iframe-container iframe {
     width: 100%;
