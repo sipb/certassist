@@ -15,12 +15,12 @@
     "watch": "webpack --mode=development --debug --output-pathinfo --watch"
   },
   "dependencies": {
-    "@babel/core": "^7.10.3",
-    "@babel/preset-env": "^7.10.3",
-    "@babel/preset-typescript": "^7.10.1",
-    "@babel/register": "^7.10.3",
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@babel/register": "^7.10.5",
     "@duosecurity/duo_web": "^1.0.5",
-    "@fortawesome/fontawesome-free": "^5.13.1",
+    "@fortawesome/fontawesome-free": "^5.14.0",
     "babel-loader": "^8.1.0",
     "core-js": "^3.6.5",
     "css-loader": "^3.6.0",
@@ -40,10 +40,10 @@
     "@types/html-webpack-plugin": "^3.2.3",
     "@types/mini-css-extract-plugin": "^0.9.1",
     "@types/node-forge": "^0.9.4",
-    "@types/webpack": "^4.41.18",
+    "@types/webpack": "^4.41.21",
     "prettier": "^2.0.5",
-    "typescript": "^3.9.5",
-    "xo": "^0.32.0"
+    "typescript": "^3.9.7",
+    "xo": "^0.32.1"
   },
   "babel": {
     "presets": [
