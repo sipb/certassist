@@ -270,7 +270,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
       loginResponse.body!,
       /^[^;]*/.exec(
         loginResponse.getField("Content-Type")!
-      )![0] as SupportedType
+      )![0] as DOMParserSupportedType
     );
     const duoParameters = parseDuoDocument(loginDoc);
     if (duoParameters === null) {
@@ -372,7 +372,9 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
 
   const doc = new DOMParser().parseFromString(
     formResponse.body!,
-    /^[^;]*/.exec(formResponse.getField("Content-Type")!)![0] as SupportedType
+    /^[^;]*/.exec(
+      formResponse.getField("Content-Type")!
+    )![0] as DOMParserSupportedType
   );
   const [userkey] = doc.getElementsByName("userkey");
   const challenge = userkey.getAttribute("challenge");

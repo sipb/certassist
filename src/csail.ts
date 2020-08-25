@@ -42,7 +42,7 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
 
   const doc = new DOMParser().parseFromString(
     formResponse.body!,
-    formResponse.fields["Content-Type"][0] as SupportedType
+    formResponse.fields["Content-Type"][0] as DOMParserSupportedType
   );
   const [keygen] = doc.getElementsByName("spkac");
   const keytype = keygen.getAttribute("keytype");
