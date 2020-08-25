@@ -51,10 +51,12 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
   if (challenge === null) throw new Error("Missing challenge");
 
   options.onStatus("Generating key pair");
-  const keyPair = await new Promise<forge.pki.rsa.KeyPair>((resolve, reject) =>
-    forge.pki.rsa.generateKeyPair({ bits: 2048 }, (err, keyPair) =>
-      err ? reject(err) : resolve(keyPair)
-    )
+  const keyPair = await new Promise<forge.pki.rsa.KeyPair>(
+    (resolve, reject) => {
+      forge.pki.rsa.generateKeyPair({ bits: 2048 }, (err, keyPair) =>
+        err ? reject(err) : resolve(keyPair)
+      );
+    }
   );
   const spkac = generateSpkac(keyPair, challenge);
 
