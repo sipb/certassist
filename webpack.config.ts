@@ -1,7 +1,6 @@
 import GitRevisionPlugin from "git-revision-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import path from "path";
 import webpack from "webpack";
 
 const gitRevisionPlugin = new GitRevisionPlugin({
@@ -10,10 +9,16 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 
 const config: webpack.Configuration = {
   output: {
-    filename: "[name].[chunkhash].bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: "[name].[contenthash].bundle.js",
+    assetModuleFilename: "[name].[hash][ext][query]",
+    publicPath: "",
   },
   resolve: {
+    fallback: {
+      fs: false,
+      https: false,
+      path: false,
+    },
     extensions: [".ts", ".js"],
   },
   plugins: [
@@ -50,15 +55,9 @@ const config: webpack.Configuration = {
       },
       {
         test: /\.(?:eot|ico|png|svg|ttf|woff|woff2)$/,
-        loader: "file-loader",
-        options: {
-          name: "[name].[hash].[ext]",
-        },
+        type: "asset/resource",
       },
     ],
-  },
-  node: {
-    fs: "empty",
   },
   devtool: "source-map",
 };

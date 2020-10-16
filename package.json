@@ -11,8 +11,8 @@
     "url": "https://github.com/sipb/certassist.git"
   },
   "scripts": {
-    "build": "webpack -p",
-    "watch": "webpack --mode=development --debug --output-pathinfo --watch"
+    "build": "webpack --mode=production",
+    "watch": "webpack --mode=development --watch"
   },
   "dependencies": {
     "@babel/core": "^7.11.4",
@@ -24,23 +24,18 @@
     "babel-loader": "^8.1.0",
     "core-js": "^3.6.5",
     "css-loader": "^5.0.0",
-    "file-loader": "^6.1.1",
     "git-revision-webpack-plugin": "^3.0.6",
-    "html-webpack-plugin": "^4.5.0",
+    "html-webpack-plugin": "^5.0.0-alpha.5",
     "js-polyfills": "^0.1.42",
     "mini-css-extract-plugin": "^1.0.0",
     "node-forge": "^0.10.0",
     "regenerator-runtime": "^0.13.7",
     "ssl-root-cas": "^1.3.1",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "webpack": "^5.1.2",
+    "webpack-cli": "^4.0.0"
   },
   "devDependencies": {
-    "@types/git-revision-webpack-plugin": "^3.0.0",
-    "@types/html-webpack-plugin": "^3.2.3",
-    "@types/mini-css-extract-plugin": "^1.0.0",
     "@types/node-forge": "^0.9.5",
-    "@types/webpack": "^4.41.21",
     "prettier": "^2.1.2",
     "typescript": "^4.0.3",
     "xo": "^0.33.0"
