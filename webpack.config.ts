@@ -9,7 +9,6 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 });
 
 const config: webpack.Configuration = {
-  entry: "./src/main",
   output: {
     filename: "[name].[chunkhash].bundle.js",
     path: path.resolve(__dirname, "dist"),
