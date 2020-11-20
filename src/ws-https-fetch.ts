@@ -46,7 +46,7 @@ async function wsHttpsFetch(
         // Avoid empty messages, which some websockify
         // versions misinterpret as closing the connection
         // (https://github.com/novnc/websockify/issues/312).
-        if (bytes.length !== 0) {
+        if (bytes.length > 0) {
           try {
             if (ws.protocol === "base64") ws.send(btoa(bytes));
             else ws.send(forge.util.binary.raw.decode(bytes));
