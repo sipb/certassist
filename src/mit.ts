@@ -73,6 +73,8 @@ function saveP12Binary(options: Options, p12Binary: Uint8Array): void {
   );
 }
 
+// https://github.com/typescript-eslint/typescript-eslint/issues/2687
+// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 type Tree = { [key: string]: Tree } | string | null;
 
 function xmlToObject(node: Node): Tree {
