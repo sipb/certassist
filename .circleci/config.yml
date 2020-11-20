@@ -12,11 +12,4 @@ jobs:
           steps:
             - run: npm ci
       - run: npm run build
-      - run: npx --no-install tsc
-      - run: npx --no-install xo
-      - run: >
-          npx --no-install prettier --check
-          '**/*.css'
-          '**/*.ejs'
-          '**/*.json'
-          '**/*.yml'
+      - run: npm run lint

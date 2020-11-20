@@ -12,6 +12,7 @@
   },
   "scripts": {
     "build": "webpack --mode=production",
+    "lint": "tsc && xo && prettier --check . '!**/*.{ts,js}'",
     "watch": "webpack --mode=development --watch"
   },
   "dependencies": {
