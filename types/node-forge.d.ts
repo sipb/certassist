@@ -34,7 +34,7 @@ declare module "node-forge/lib/http" {
   }
 
   interface Header {
-    fields: { [name: string]: string[] };
+    fields: Record<string, string[]>;
     setField: (name: string, value: string) => void;
     appendField: (name: string, value: string) => void;
     getField: (name: string, index?: number) => string | null;
@@ -55,9 +55,7 @@ declare module "node-forge/lib/http" {
     method?: string;
     path?: string;
     body?: forge.Bytes;
-    headers?:
-      | { [name: string]: string }
-      | ReadonlyArray<{ [name: string]: string }>;
+    headers?: Record<string, string> | ReadonlyArray<Record<string, string>>;
   }): Request;
 
   interface Response extends Header {

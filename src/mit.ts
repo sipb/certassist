@@ -88,7 +88,7 @@ function xmlToObject(node: Node): Tree {
   return leaf ? node.textContent : tree;
 }
 
-async function apiCall(cmd: { [key: string]: string }): Promise<Tree> {
+async function apiCall(cmd: Record<string, string>): Promise<Tree> {
   const response = await wsHttpsFetch(
     wsUrl,
     http.createRequest({
