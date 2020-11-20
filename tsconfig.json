@@ -1,10 +1,16 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "noEmit": true,
+    "paths": {
+      "*": ["types/*"]
+    },
     "strict": true,
-    "target": "esnext"
-  }
+    "target": "esnext",
+    "types": ["node"]
+  },
+  "exclude": ["types"]
 }
