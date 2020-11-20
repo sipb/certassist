@@ -94,10 +94,11 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
   let p7: forge.pkcs7.PkcsSignedData;
   try {
     p7 = forge.pkcs7.messageFromAsn1(a1) as forge.pkcs7.PkcsSignedData;
-  } catch (error) {
+  } catch (error: unknown) {
     if (
+      error instanceof Error &&
       error.message ===
-      "Unsupported PKCS#7 message. Only wrapped ContentType Data supported."
+        "Unsupported PKCS#7 message. Only wrapped ContentType Data supported."
     ) {
       const contentType = (((a1.value[1] as asn1.Asn1).value[0] as asn1.Asn1)
         .value[2] as asn1.Asn1).value[0] as asn1.Asn1;
@@ -169,8 +170,13 @@ async function submit(event: Event): Promise<void> {
       }),
       login + "-csail-cert.p12"
     );
-  } catch (error) {
-    statusElement.append(error, "\n");
+  } catch (error: unknown) {
+    statusElement.append(
+      error instanceof Error
+        ? `${error.name}: ${error.message}`
+        : "Unknown error",
+      "\n"
+    );
     throw error;
   } finally {
     working = false;

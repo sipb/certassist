@@ -588,8 +588,13 @@ async function submit(event: Event): Promise<void> {
         statusElement.append(status, "\n");
       },
     });
-  } catch (error) {
-    statusElement.append(error, "\n");
+  } catch (error: unknown) {
+    statusElement.append(
+      error instanceof Error
+        ? `${error.name}: ${error.message}`
+        : "Unknown error",
+      "\n"
+    );
     throw error;
   } finally {
     working = false;

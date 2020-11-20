@@ -50,7 +50,7 @@ async function wsHttpsFetch(
           try {
             if (ws.protocol === "base64") ws.send(btoa(bytes));
             else ws.send(forge.util.binary.raw.decode(bytes));
-          } catch (error) {
+          } catch (error: unknown) {
             if (done)
               // Firefox on Android seems to enjoy
               // throwing NS_ERROR_NOT_CONNECTED here.
