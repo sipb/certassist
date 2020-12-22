@@ -43,15 +43,7 @@ const config: webpack.Configuration = {
       },
       {
         test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: "css-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-        ],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.(?:eot|ico|png|svg|ttf|woff|woff2)$/,
