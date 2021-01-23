@@ -66,12 +66,14 @@ async function wsHttpsFetch(
             response.readHeader(buffer);
           }
 
-          if (response.headerReceived && !response.bodyReceived) {
-            if (response.readBody(buffer)) {
-              done = true;
-              connection.close();
-              resolve(response);
-            }
+          if (
+            response.headerReceived &&
+            !response.bodyReceived &&
+            response.readBody(buffer)
+          ) {
+            done = true;
+            connection.close();
+            resolve(response);
           }
         }
       },
