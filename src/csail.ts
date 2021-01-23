@@ -53,9 +53,10 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
   options.onStatus("Generating key pair");
   const keyPair = await new Promise<forge.pki.rsa.KeyPair>(
     (resolve, reject) => {
-      forge.pki.rsa.generateKeyPair({ bits: 2048 }, (error, keyPair) =>
-        error ? reject(error) : resolve(keyPair)
-      );
+      forge.pki.rsa.generateKeyPair({ bits: 2048 }, (error, keyPair) => {
+        if (error) reject(error);
+        else resolve(keyPair);
+      });
     }
   );
   const spkac = generateSpkac(keyPair, challenge);

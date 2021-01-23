@@ -22,13 +22,15 @@ const saveBlob: (blob: Blob, filename: string) => void = window.navigator
   ? (blob, filename) => {
       const url = URL.createObjectURL(blob);
       saveUrl(url, filename);
-      setTimeout(() => URL.revokeObjectURL(url), 0);
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 0);
     }
   : (blob, filename) => {
       const reader = new FileReader();
-      reader.addEventListener("load", () =>
-        saveUrl(reader.result as string, filename)
-      );
+      reader.addEventListener("load", () => {
+        saveUrl(reader.result as string, filename);
+      });
       reader.readAsDataURL(blob);
     };
 

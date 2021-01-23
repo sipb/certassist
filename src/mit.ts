@@ -443,9 +443,10 @@ async function downloadCertClientKey(options: Options): Promise<void> {
     getSpkac: async (challenge) => {
       options.onStatus("Generating key pair");
       keyPair = await new Promise<forge.pki.rsa.KeyPair>((resolve, reject) => {
-        forge.pki.rsa.generateKeyPair({ bits: 2048 }, (error, keyPair) =>
-          error ? reject(error) : resolve(keyPair)
-        );
+        forge.pki.rsa.generateKeyPair({ bits: 2048 }, (error, keyPair) => {
+          if (error) reject(error);
+          else resolve(keyPair);
+        });
       });
       return generateSpkac(keyPair, challenge);
     },
