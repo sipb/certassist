@@ -51,7 +51,7 @@
           "useBuiltIns": "usage"
         }
       ],
-      "@babel/typescript"
+      "@babel/preset-typescript"
     ]
   },
   "prettier": {
