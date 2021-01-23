@@ -211,9 +211,9 @@
       </span>
       <span class="instructions-firefox-android">
         Firefox on Android
-        <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=868370">
-          does not currently support
-        </a>
+        <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=868370"
+          >does not currently support</a
+        >
         importing a certificate from a *.p12 file. However, you can install your
         certificate from <a href="https://ca.mit.edu/">ca.mit.edu</a> directly.
         (Alternatively, if you have root access to your device, you may be able
@@ -241,13 +241,13 @@
         </p>
         <p>
           As a workaround for the absence of
-          <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">
-            CORS
-          </a>
+          <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing"
+            >CORS</a
+          >
           headers on these servers, CertAssist uses a
-          <a href="https://github.com/digitalbazaar/forge#readme">
-            JavaScript TLS library
-          </a>
+          <a href="https://github.com/digitalbazaar/forge#readme"
+            >JavaScript TLS library</a
+          >
           to make an end-to-end encrypted and authenticated HTTPS connection to
           them. The encrypted connection is relayed over a WebSocket proxy on
           this server that does not need to be trusted (but is itself encrypted
@@ -293,9 +293,9 @@
       </li>
       <li class="version">
         <i class="icon icon-code-branch"></i>
-        <a href="https://github.com/sipb/certassist/commit/<%- COMMITHASH %>">
-          <%- VERSION %>
-        </a>
+        <a href="https://github.com/sipb/certassist/commit/<%- COMMITHASH %>"
+          ><%- VERSION %></a
+        >
       </li>
     </ul>
   </body>
