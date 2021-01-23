@@ -24,43 +24,43 @@ const wsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
 }/ws/mit`;
 
 let working = false;
-const formElement = document.querySelector("#mit-form") as HTMLFormElement;
-const submitElement = document.querySelector("#mit-submit") as HTMLInputElement;
-const loginElement = document.querySelector("#mit-login") as HTMLInputElement;
-const passwordElement = document.querySelector(
+const formElement = document.querySelector<HTMLFormElement>("#mit-form")!;
+const submitElement = document.querySelector<HTMLInputElement>("#mit-submit")!;
+const loginElement = document.querySelector<HTMLInputElement>("#mit-login")!;
+const passwordElement = document.querySelector<HTMLInputElement>(
   "#mit-password"
-) as HTMLInputElement;
-const mitIdControlElement = document.querySelector(
+)!;
+const mitIdControlElement = document.querySelector<HTMLElement>(
   "#mit-id-control"
-) as HTMLElement;
-const mitIdElement = document.querySelector("#mit-id") as HTMLInputElement;
-const duoControlElement = document.querySelector(
+)!;
+const mitIdElement = document.querySelector<HTMLInputElement>("#mit-id")!;
+const duoControlElement = document.querySelector<HTMLElement>(
   "#mit-duo-control"
-) as HTMLElement;
+)!;
 const duoIframeContainerElement = document.querySelector(
   "#mit-duo-iframe-container"
 )!;
 const duoCancelElement = document.querySelector("#mit-duo-cancel")!;
-const downloadPasswordControlElement = document.querySelector(
+const downloadPasswordControlElement = document.querySelector<HTMLInputElement>(
   "#mit-downloadpassword-control"
-) as HTMLInputElement;
-const downloadPasswordElement = document.querySelector(
+)!;
+const downloadPasswordElement = document.querySelector<HTMLInputElement>(
   "#mit-downloadpassword"
-) as HTMLInputElement;
-const spkacFormElement = document.querySelector(
+)!;
+const spkacFormElement = document.querySelector<HTMLFormElement>(
   "#mit-spkac-form"
-) as HTMLFormElement;
-const spkacChallengeElement = document.querySelector(
+)!;
+const spkacChallengeElement = document.querySelector<HTMLInputElement>(
   "#mit-spkac-challenge"
-) as HTMLInputElement;
+)!;
 const spkacChallengeShElement = document.querySelector(
   "#mit-spkac-challenge-sh"
 )!;
-const spkacElement = document.querySelector("#mit-spkac") as HTMLInputElement;
+const spkacElement = document.querySelector<HTMLInputElement>("#mit-spkac")!;
 const spkacCancelElement = document.querySelector("#mit-spkac-cancel")!;
-const generateElement = document.querySelector(
+const generateElement = document.querySelector<HTMLInputElement>(
   "#mit-generate"
-) as HTMLInputElement;
+)!;
 const statusElement = document.querySelector("#mit-status")!;
 
 function saveP12Binary(options: Options, p12Binary: Uint8Array): void {
@@ -381,7 +381,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
   const [userkey] = doc.getElementsByName("userkey");
   const challenge = userkey.getAttribute("challenge");
   if (challenge === null) throw new Error("Missing challenge");
-  const life = (doc.querySelector("#life") as HTMLInputElement).value;
+  const life = doc.querySelector<HTMLInputElement>("#life")!.value;
 
   const spkac = await options.getSpkac(challenge);
 

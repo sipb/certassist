@@ -128,16 +128,16 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
 }
 
 let working = false;
-const submitElement = document.querySelector(
+const submitElement = document.querySelector<HTMLInputElement>(
   "#csail-submit"
-) as HTMLInputElement;
-const loginElement = document.querySelector("#csail-login") as HTMLInputElement;
-const passwordElement = document.querySelector(
+)!;
+const loginElement = document.querySelector<HTMLInputElement>("#csail-login")!;
+const passwordElement = document.querySelector<HTMLInputElement>(
   "#csail-password"
-) as HTMLInputElement;
-const downloadPasswordElement = document.querySelector(
+)!;
+const downloadPasswordElement = document.querySelector<HTMLInputElement>(
   "#csail-downloadpassword"
-) as HTMLInputElement;
+)!;
 const statusElement = document.querySelector("#csail-status")!;
 
 function validate(): void {
