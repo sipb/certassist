@@ -37,8 +37,16 @@ const config: webpack.Configuration = {
   module: {
     rules: [
       {
+        test: /\.font\.js$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: "css-loader", options: { url: false } },
+          { loader: "webfonts-loader", options: { publicPath: "" } },
+        ],
+      },
+      {
         test: /\.(js|ts)$/,
-        exclude: /node_modules/,
+        exclude: /\.font\.js$|node_modules/,
         loader: "babel-loader",
       },
       {

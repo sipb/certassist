@@ -44,8 +44,8 @@
         <div class="control">
           <label></label>
           <label for="mit-advanced">
-            Advanced <i class="fa fa-caret-right advanced-off"></i
-            ><i class="fa fa-caret-down advanced-on"></i>
+            Advanced <i class="icon icon-caret-right advanced-off"></i
+            ><i class="icon icon-caret-down advanced-on"></i>
           </label>
         </div>
         <div class="advanced-on">
@@ -61,7 +61,7 @@
         <div class="control">
           <label></label>
           <button type="submit" id="mit-submit">
-            <i class="fa fa-download"></i> Go
+            <i class="icon icon-download"></i> Go
           </button>
         </div>
         <pre id="mit-status"></pre>
@@ -113,7 +113,7 @@
         <div class="control">
           <label></label>
           <button type="submit" id="csail-submit">
-            <i class="fa fa-download"></i> Go
+            <i class="icon icon-download"></i> Go
           </button>
         </div>
         <pre id="csail-status"></pre>
@@ -127,15 +127,19 @@
     <p class="instructions">
       <strong>Browser instructions:</strong>
       <input type="radio" name="browser" value="chrome" id="browser-chrome" />
-      <label for="browser-chrome"><i class="fab fa-chrome"></i> Chrome</label>
+      <label for="browser-chrome"
+        ><i class="icon icon-chrome"></i> Chrome</label
+      >
       <input type="radio" name="browser" value="edge" id="browser-edge" />
-      <label for="browser-edge"><i class="fab fa-edge"></i> IE/Edge</label>
+      <label for="browser-edge"><i class="icon icon-edge"></i> IE/Edge</label>
       <input type="radio" name="browser" value="firefox" id="browser-firefox" />
       <label for="browser-firefox"
-        ><i class="fab fa-firefox"></i> Firefox</label
+        ><i class="icon icon-firefox"></i> Firefox</label
       >
       <input type="radio" name="browser" value="safari" id="browser-safari" />
-      <label for="browser-safari"><i class="fab fa-safari"></i> Safari</label>
+      <label for="browser-safari"
+        ><i class="icon icon-safari"></i> Safari</label
+      >
       <strong class="platform platform-windows platform-linux platform-android">
         on
       </strong>
@@ -147,7 +151,7 @@
         class="platform platform-windows"
       />
       <label for="platform-windows" class="platform platform-windows">
-        <i class="fab fa-windows"></i> Windows</label
+        <i class="icon icon-windows"></i> Windows</label
       >
       <input
         type="radio"
@@ -157,7 +161,7 @@
         class="platform platform-mac"
       />
       <label for="platform-mac" class="platform platform-mac">
-        <i class="fab fa-apple"></i> Mac</label
+        <i class="icon icon-apple"></i> Mac</label
       >
       <input
         type="radio"
@@ -167,7 +171,7 @@
         class="platform platform-linux"
       />
       <label for="platform-linux" class="platform platform-linux">
-        <i class="fab fa-linux"></i> Linux</label
+        <i class="icon icon-linux"></i> Linux</label
       >
       <input
         type="radio"
@@ -177,7 +181,7 @@
         class="platform platform-android"
       />
       <label for="platform-android" class="platform platform-android">
-        <i class="fab fa-android"></i> Android</label
+        <i class="icon icon-android"></i> Android</label
       >
       <span class="instructions-chrome-windows instructions-edge">
         Open the downloaded *.p12 file, and follow the steps of the Certificate
@@ -224,8 +228,8 @@
       <strong>How does this work?</strong>
       <input type="checkbox" id="howitworks" />
       <label for="howitworks">
-        Details <i class="fa fa-caret-right off"></i
-        ><i class="fa fa-caret-down on"></i>
+        Details <i class="icon icon-caret-right off"></i
+        ><i class="icon icon-caret-down on"></i>
       </label>
       <div id="howitworks-text">
         <p>
@@ -284,11 +288,11 @@
         is not an official IS&amp;T or TIG service.
       </li>
       <li>
-        <i class="fab fa-2x fa-github"></i>
+        <i class="icon icon-2x icon-github"></i>
         <a href="https://github.com/sipb/certassist">Source</a> on GitHub.
       </li>
       <li class="version">
-        <i class="fa fa-code-branch"></i>
+        <i class="icon icon-code-branch"></i>
         <a href="https://github.com/sipb/certassist/commit/<%- COMMITHASH %>">
           <%- VERSION %>
         </a>
