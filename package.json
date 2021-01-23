@@ -17,30 +17,30 @@
   },
   "dependencies": {
     "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
     "@babel/register": "^7.12.10",
     "@duosecurity/duo_web": "^1.0.5",
-    "@fortawesome/fontawesome-free": "^5.15.1",
+    "@fortawesome/fontawesome-free": "^5.15.2",
     "babel-loader": "^8.2.2",
-    "core-js": "^3.8.1",
+    "core-js": "^3.8.3",
     "css-loader": "^5.0.0",
     "git-revision-webpack-plugin": "^3.0.6",
-    "html-webpack-plugin": "^5.0.0-alpha.15",
+    "html-webpack-plugin": "^5.0.0-beta.6",
     "js-polyfills": "^0.1.42",
-    "mini-css-extract-plugin": "^1.3.3",
+    "mini-css-extract-plugin": "^1.3.4",
     "node-forge": "^0.10.0",
     "regenerator-runtime": "^0.13.7",
     "ssl-root-cas": "^1.3.1",
-    "webpack": "^5.10.1",
-    "webpack-cli": "^4.0.0"
+    "webpack": "^5.17.0",
+    "webpack-cli": "^4.4.0"
   },
   "devDependencies": {
     "@types/mini-css-extract-plugin": "^1.2.2",
-    "@types/node-forge": "^0.9.5",
+    "@types/node-forge": "^0.9.7",
     "prettier": "^2.2.1",
     "typescript": "^4.1.3",
-    "xo": "^0.35.0"
+    "xo": "^0.37.1"
   },
   "babel": {
     "presets": [
