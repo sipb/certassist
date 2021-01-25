@@ -37,6 +37,7 @@
     "webpack-cli": "^4.4.0"
   },
   "devDependencies": {
+    "@types/git-revision-webpack-plugin": "^3.0.1",
     "@types/mini-css-extract-plugin": "^1.2.2",
     "@types/node-forge": "^0.9.7",
     "prettier": "^2.2.1",
