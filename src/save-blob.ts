@@ -9,7 +9,6 @@ function saveUrl(url: string, filename: string): void {
 }
 
 const useObjectUrl =
-  URL.createObjectURL &&
   // https://crbug.com/733304
   !/ Android 7\..* Chrome\/5\d\./.test(window.navigator.userAgent);
 

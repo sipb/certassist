@@ -16,33 +16,33 @@
     "watch": "webpack --mode=development --watch"
   },
   "dependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-typescript": "^7.12.7",
-    "@babel/register": "^7.12.10",
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "@babel/preset-typescript": "^7.13.0",
+    "@babel/register": "^7.13.8",
     "@duosecurity/duo_web": "^1.0.5",
     "@fortawesome/fontawesome-free": "^5.15.2",
     "babel-loader": "^8.2.2",
-    "core-js": "^3.8.3",
-    "css-loader": "^5.0.0",
+    "core-js": "^3.9.1",
+    "css-loader": "^5.1.1",
     "git-revision-webpack-plugin": "^3.0.6",
-    "html-webpack-plugin": "^5.0.0-beta.6",
+    "html-webpack-plugin": "^5.3.0",
     "js-polyfills": "^0.1.42",
-    "mini-css-extract-plugin": "^1.3.4",
+    "mini-css-extract-plugin": "^1.3.9",
     "node-forge": "^0.10.0",
     "regenerator-runtime": "^0.13.7",
     "ssl-root-cas": "^1.3.1",
-    "webfonts-loader": "^7.1.0",
-    "webpack": "^5.17.0",
-    "webpack-cli": "^4.4.0"
+    "webfonts-loader": "^7.2.0",
+    "webpack": "^5.24.4",
+    "webpack-cli": "^4.5.0"
   },
   "devDependencies": {
     "@types/git-revision-webpack-plugin": "^3.0.1",
     "@types/mini-css-extract-plugin": "^1.2.2",
     "@types/node-forge": "^0.9.7",
     "prettier": "^2.2.1",
-    "typescript": "^4.1.3",
-    "xo": "^0.37.1"
+    "typescript": "^4.2.3",
+    "xo": "^0.38.2"
   },
   "babel": {
     "presets": [
