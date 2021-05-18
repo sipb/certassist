@@ -28,7 +28,8 @@ async function wsHttpsFetch(
       virtualHost: hostname,
       verify: (_connection, verified, depth, certs) => {
         if (depth === 0) {
-          const cn: string = certs[0].subject.getField("CN").value;
+          const cn = (certs[0].subject.getField("CN") as forge.pki.Attribute)
+            .value as string;
           if (cn !== hostname) {
             verified = {
               alert: forge.tls.Alert.Description.bad_certificate,
