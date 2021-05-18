@@ -1,4 +1,4 @@
-import GitRevisionPlugin from "git-revision-webpack-plugin";
+import { GitRevisionPlugin } from "git-revision-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import webpack from "webpack";

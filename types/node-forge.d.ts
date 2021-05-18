@@ -1,6 +1,6 @@
-/// <reference types="node-forge" />
+/* eslint-disable @typescript-eslint/triple-slash-reference, unicorn/prevent-abbreviations */
 
-/* eslint-disable unicorn/prevent-abbreviations */
+/// <reference types="node-forge" />
 
 declare module "node-forge" {
   namespace oids {

@@ -101,8 +101,9 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
       error.message ===
         "Unsupported PKCS#7 message. Only wrapped ContentType Data supported."
     ) {
-      const contentType = (((a1.value[1] as asn1.Asn1).value[0] as asn1.Asn1)
-        .value[2] as asn1.Asn1).value[0] as asn1.Asn1;
+      const contentType = (
+        ((a1.value[1] as asn1.Asn1).value[0] as asn1.Asn1).value[2] as asn1.Asn1
+      ).value[0] as asn1.Asn1;
       if (contentType.value === asn1.oidToDer("0.0").getBytes()) {
         options.onStatus("Fixing CSAIL invalid ContentType");
         contentType.value = asn1.oidToDer(forge.oids.data).getBytes();
@@ -128,13 +129,11 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
 }
 
 let working = false;
-const submitElement = document.querySelector<HTMLInputElement>(
-  "#csail-submit"
-)!;
+const submitElement =
+  document.querySelector<HTMLInputElement>("#csail-submit")!;
 const loginElement = document.querySelector<HTMLInputElement>("#csail-login")!;
-const passwordElement = document.querySelector<HTMLInputElement>(
-  "#csail-password"
-)!;
+const passwordElement =
+  document.querySelector<HTMLInputElement>("#csail-password")!;
 const downloadPasswordElement = document.querySelector<HTMLInputElement>(
   "#csail-downloadpassword"
 )!;

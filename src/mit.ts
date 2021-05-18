@@ -27,16 +27,13 @@ let working = false;
 const formElement = document.querySelector<HTMLFormElement>("#mit-form")!;
 const submitElement = document.querySelector<HTMLInputElement>("#mit-submit")!;
 const loginElement = document.querySelector<HTMLInputElement>("#mit-login")!;
-const passwordElement = document.querySelector<HTMLInputElement>(
-  "#mit-password"
-)!;
-const mitIdControlElement = document.querySelector<HTMLElement>(
-  "#mit-id-control"
-)!;
+const passwordElement =
+  document.querySelector<HTMLInputElement>("#mit-password")!;
+const mitIdControlElement =
+  document.querySelector<HTMLElement>("#mit-id-control")!;
 const mitIdElement = document.querySelector<HTMLInputElement>("#mit-id")!;
-const duoControlElement = document.querySelector<HTMLElement>(
-  "#mit-duo-control"
-)!;
+const duoControlElement =
+  document.querySelector<HTMLElement>("#mit-duo-control")!;
 const duoIframeContainerElement = document.querySelector(
   "#mit-duo-iframe-container"
 )!;
@@ -47,9 +44,8 @@ const downloadPasswordControlElement = document.querySelector<HTMLInputElement>(
 const downloadPasswordElement = document.querySelector<HTMLInputElement>(
   "#mit-downloadpassword"
 )!;
-const spkacFormElement = document.querySelector<HTMLFormElement>(
-  "#mit-spkac-form"
-)!;
+const spkacFormElement =
+  document.querySelector<HTMLFormElement>("#mit-spkac-form")!;
 const spkacChallengeElement = document.querySelector<HTMLInputElement>(
   "#mit-spkac-challenge"
 )!;
@@ -58,9 +54,8 @@ const spkacChallengeShElement = document.querySelector(
 )!;
 const spkacElement = document.querySelector<HTMLInputElement>("#mit-spkac")!;
 const spkacCancelElement = document.querySelector("#mit-spkac-cancel")!;
-const generateElement = document.querySelector<HTMLInputElement>(
-  "#mit-generate"
-)!;
+const generateElement =
+  document.querySelector<HTMLInputElement>("#mit-generate")!;
 const statusElement = document.querySelector("#mit-status")!;
 
 function saveP12Binary(options: Options, p12Binary: Uint8Array): void {
@@ -202,9 +197,10 @@ function parseDuoDocument(
   if (iframe === null) return null;
   const script = iframe.previousElementSibling;
   if (!(script instanceof HTMLScriptElement)) return null;
-  const m = /^\s*Duo\.init\({\s*'host':\s*"([^\\"]*)",\s*'sig_request':\s*"([^\\"]*)",\s*'post_action':\s*"([^\\"]*)"\s*}\);\s*$/.exec(
-    script.text
-  );
+  const m =
+    /^\s*Duo\.init\({\s*'host':\s*"([^\\"]*)",\s*'sig_request':\s*"([^\\"]*)",\s*'post_action':\s*"([^\\"]*)"\s*}\);\s*$/.exec(
+      script.text
+    );
   if (m === null) return null;
   const [, host, sig_request, post_action] = m;
   return { host, sig_request, post_action };
