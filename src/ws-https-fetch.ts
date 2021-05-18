@@ -95,16 +95,22 @@ async function wsHttpsFetch(
     });
     ws.addEventListener("open", () => {
       console.log("Opened", ws.protocol, "WebSocket");
+
+      if (ws.protocol === "base64") {
+        ws.addEventListener("message", (event: MessageEvent<string>) => {
+          tls.process(atob(event.data));
+        });
+      } else {
+        ws.addEventListener("message", (event: MessageEvent<ArrayBuffer>) => {
+          tls.process(forge.util.binary.raw.encode(new Uint8Array(event.data)));
+        });
+      }
+
       tls.handshake();
     });
     ws.addEventListener("close", () => {
       console.log("Closed WebSocket");
       tls.close();
-    });
-    ws.addEventListener("message", (event) => {
-      if (ws.protocol === "base64") tls.process(atob(event.data));
-      else
-        tls.process(forge.util.binary.raw.encode(new Uint8Array(event.data)));
     });
     ws.addEventListener("error", (event) => {
       console.log("WebSocket error:", event);
