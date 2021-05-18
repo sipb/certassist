@@ -1,7 +1,7 @@
 import forge from "node-forge";
 import http from "node-forge/lib/http";
 
-const sessionCaches = new Map();
+const sessionCaches = new Map<string, forge.tls.SessionCache>();
 
 async function wsHttpsFetch(
   wsUrl: string,
