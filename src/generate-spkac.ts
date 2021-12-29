@@ -29,7 +29,7 @@ function generateSpkac(
             asn1.Class.UNIVERSAL,
             asn1.Type.BITSTRING,
             false,
-            String.fromCharCode(0x00) + signature
+            "\u0000" + signature
           ),
         ])
       )
