@@ -24,7 +24,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "babel-loader": "^8.2.2",
     "core-js": "^3.17.2",
-    "css-loader": "^5.2.7",
+    "css-loader": "^6.5.1",
     "git-revision-webpack-plugin": "^5.0.0",
     "html-webpack-plugin": "^5.3.2",
     "js-polyfills": "^0.1.42",
@@ -42,7 +42,7 @@
     "@types/node-forge": "^0.10.3",
     "prettier": "^2.3.2",
     "typescript": "^4.4.2",
-    "xo": "^0.41.0"
+    "xo": "^0.47.0"
   },
   "babel": {
     "presets": [
@@ -77,7 +77,9 @@
     ],
     "prettier": true,
     "rules": {
+      "@typescript-eslint/naming-convention": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
+      "import/extensions": "off",
       "strict": "error"
     },
     "overrides": [
