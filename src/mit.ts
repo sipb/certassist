@@ -294,7 +294,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
         Duo.init({
           ...duoParameters,
           iframe,
-          submit_callback: (duoResponse) => {
+          submit_callback(duoResponse) {
             duoCancelElement.removeEventListener("click", cancel);
             resolve(duoResponse);
           },
@@ -436,7 +436,7 @@ async function downloadCertClientKey(options: Options): Promise<void> {
   let keyPair: forge.pki.rsa.KeyPair;
   const der = await scrapeCertDer({
     ...options,
-    getSpkac: async (challenge) => {
+    async getSpkac(challenge) {
       options.onStatus("Generating key pair");
       keyPair = await new Promise<forge.pki.rsa.KeyPair>((resolve, reject) => {
         forge.pki.rsa.generateKeyPair({ bits: 2048 }, (error, keyPair) => {
@@ -465,7 +465,7 @@ async function downloadCertClientKey(options: Options): Promise<void> {
 async function downloadCertManual(options: Options): Promise<void> {
   const der = await scrapeCertDer({
     ...options,
-    getSpkac: async (challenge) => {
+    async getSpkac(challenge) {
       spkacChallengeElement.value = challenge;
       spkacChallengeShElement.textContent =
         "'" + challenge.replace("'", "'\\''") + "'";
@@ -583,7 +583,7 @@ async function submit(event: Event): Promise<void> {
       force: "0",
       alwaysreuse: "1",
       generate: generateElement.value,
-      onStatus: (status: string) => {
+      onStatus(status: string) {
         statusElement.append(status, "\n");
       },
     });

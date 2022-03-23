@@ -159,7 +159,7 @@ async function submit(event: Event): Promise<void> {
       login,
       password: passwordElement.value,
       downloadpassword: downloadPasswordElement.value,
-      onStatus: (status) => {
+      onStatus(status) {
         statusElement.append(status, "\n");
       },
     });

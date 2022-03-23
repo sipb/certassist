@@ -26,7 +26,7 @@ async function wsHttpsFetch(
       caStore,
       sessionCache,
       virtualHost: hostname,
-      verify: (_connection, verified, depth, certs) => {
+      verify(_connection, verified, depth, certs) {
         if (depth === 0) {
           const cn = (certs[0].subject.getField("CN") as forge.pki.Attribute)
             .value as string;
@@ -42,7 +42,7 @@ async function wsHttpsFetch(
       },
       connected: (connection) =>
         connection.prepare(request.toString() + request.body!),
-      tlsDataReady: (connection) => {
+      tlsDataReady(connection) {
         const bytes = connection.tlsData.getBytes();
         // Avoid empty messages, which some websockify
         // versions misinterpret as closing the connection
@@ -60,7 +60,7 @@ async function wsHttpsFetch(
           }
         }
       },
-      dataReady: (connection) => {
+      dataReady(connection) {
         buffer.putBytes(connection.data.getBytes());
         if (!done && !response.bodyReceived) {
           if (!response.headerReceived) {
@@ -78,7 +78,7 @@ async function wsHttpsFetch(
           }
         }
       },
-      closed: () => {
+      closed() {
         ws.close();
         if (!done) {
           done = true;
@@ -86,7 +86,7 @@ async function wsHttpsFetch(
           reject(new Error("Connection closed unexpectedly"));
         }
       },
-      error: (_connection, error) => {
+      error(_connection, error) {
         console.log("TLS error:", error);
         if (!done) {
           done = true;
