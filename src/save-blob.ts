@@ -12,12 +12,7 @@ const useObjectUrl =
   // https://crbug.com/733304
   !/ Android 7\..* Chrome\/5\d\./.test(window.navigator.userAgent);
 
-const saveBlob: (blob: Blob, filename: string) => void = window.navigator
-  .msSaveOrOpenBlob
-  ? (blob, filename) => {
-      window.navigator.msSaveOrOpenBlob(blob, filename);
-    }
-  : useObjectUrl
+const saveBlob: (blob: Blob, filename: string) => void = useObjectUrl
   ? (blob, filename) => {
       const url = URL.createObjectURL(blob);
       saveUrl(url, filename);
