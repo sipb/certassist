@@ -7,7 +7,7 @@ import generateSpkac from "./generate-spkac";
 import saveBlob from "./save-blob";
 import caStore from "./ca-store";
 
-interface Options {
+type Options = {
   login: string;
   password: string;
   mitid: string;
@@ -17,7 +17,7 @@ interface Options {
   alwaysreuse: string;
   generate: string;
   onStatus: (status: string) => void;
-}
+};
 
 const wsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
   window.location.host
@@ -112,9 +112,9 @@ async function apiCall(cmd: Record<string, string>): Promise<Tree> {
   );
 }
 
-interface APIError {
+type APIError = {
   error: { code: string; text: string };
-}
+};
 
 async function downloadCertServerKey(options: Options): Promise<void> {
   options.onStatus("Opening session");
@@ -222,9 +222,9 @@ async function start(): Promise<http.Response> {
   return response;
 }
 
-interface ScrapeCertDerOptions extends Options {
+type ScrapeCertDerOptions = {
   getSpkac: (challenge: string) => Promise<string>;
-}
+} & Options;
 
 async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
   options.onStatus("Opening session");
@@ -528,6 +528,7 @@ async function downloadCert(options: Options): Promise<void> {
 }
 
 declare global {
+  /* eslint-disable-next-line @typescript-eslint/consistent-type-definitions */
   interface Window {
     certAssistMitPing: () => Promise<void>;
   }

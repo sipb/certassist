@@ -23,7 +23,7 @@
     "@duosecurity/duo_web": "^1.0.5",
     "@fortawesome/fontawesome-free": "^6.1.1",
     "babel-loader": "^8.2.2",
-    "core-js": "^3.23.3",
+    "core-js": "^3.25.5",
     "css-loader": "^6.5.1",
     "git-revision-webpack-plugin": "^5.0.0",
     "html-webpack-plugin": "^5.3.2",
@@ -40,14 +40,14 @@
     "@types/node-forge": "^1.0.1",
     "prettier": "^2.3.2",
     "typescript": "^4.4.2",
-    "xo": "^0.50.0"
+    "xo": "^0.52.4"
   },
   "babel": {
     "presets": [
       [
         "@babel/preset-env",
         {
-          "corejs": "3.23",
+          "corejs": "3.25",
           "useBuiltIns": "usage"
         }
       ],

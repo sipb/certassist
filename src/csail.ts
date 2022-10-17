@@ -10,12 +10,12 @@ const wsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${
   window.location.host
 }/ws/csail`;
 
-interface Options {
+type Options = {
   login: string;
   password: string;
   downloadpassword: string;
   onStatus: (status: string) => void;
-}
+};
 
 async function downloadCert(options: Options): Promise<Uint8Array> {
   options.onStatus("Authenticating");

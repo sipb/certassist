@@ -1,21 +1,21 @@
-import forge from "node-forge";
+import type forge from "node-forge";
 
-export interface Cookie {
+export type Cookie = {
   name: string;
   value: string;
   maxAge?: number;
   secure?: boolean;
   httpOnly?: boolean;
-}
+};
 
-export interface Header {
+export type Header = {
   fields: Record<string, string[]>;
   setField: (name: string, value: string) => void;
   appendField: (name: string, value: string) => void;
   getField: (name: string, index?: number) => string | null;
-}
+};
 
-export interface Request extends Header {
+export type Request = {
   version: string;
   method: string | null;
   path: string | null;
@@ -23,7 +23,7 @@ export interface Request extends Header {
   bodyDeflated: boolean;
   addCookie: (cookie: Cookie) => void;
   toString: () => string;
-}
+} & Header;
 
 export function createRequest(options: {
   version?: string;
@@ -33,7 +33,7 @@ export function createRequest(options: {
   headers?: Record<string, string> | ReadonlyArray<Record<string, string>>;
 }): Request;
 
-export interface Response extends Header {
+export type Response = {
   version: string | null;
   code: number;
   message: string | null;
@@ -44,6 +44,6 @@ export interface Response extends Header {
   readBody: (b: forge.util.ByteBuffer) => boolean;
   getCookies: () => Cookie[];
   toString: () => string;
-}
+} & Header;
 
 export function createResponse(): Response;
