@@ -40,7 +40,7 @@
     "@types/node-forge": "^1.0.1",
     "prettier": "^2.3.2",
     "typescript": "^5.0.4",
-    "xo": "^0.54.1"
+    "xo": "^0.55.0"
   },
   "babel": {
     "presets": [
