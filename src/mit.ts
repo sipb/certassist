@@ -188,9 +188,9 @@ const caHeaders = {
 };
 
 function parseDuoDocument(
-  doc: Document
+  loginDocument: Document
 ): { host: string; sig_request: string; post_action: string } | null {
-  const iframe = doc.querySelector("#duo_iframe");
+  const iframe = loginDocument.querySelector("#duo_iframe");
   if (iframe === null) return null;
   const script = iframe.previousElementSibling;
   if (!(script instanceof HTMLScriptElement)) return null;
@@ -261,13 +261,13 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
   );
 
   if (loginResponse.code === 200) {
-    const loginDoc = new DOMParser().parseFromString(
+    const loginDocument = new DOMParser().parseFromString(
       loginResponse.body!,
       /^[^;]*/.exec(
         loginResponse.getField("Content-Type")!
       )![0] as DOMParserSupportedType
     );
-    const duoParameters = parseDuoDocument(loginDoc);
+    const duoParameters = parseDuoDocument(loginDocument);
     if (duoParameters === null) {
       console.log("Server error:", loginResponse);
       throw new Error("Server error: Unrecognized response");
@@ -365,16 +365,17 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
     );
   }
 
-  const doc = new DOMParser().parseFromString(
+  const challengeDocument = new DOMParser().parseFromString(
     formResponse.body!,
     /^[^;]*/.exec(
       formResponse.getField("Content-Type")!
     )![0] as DOMParserSupportedType
   );
-  const [userkey] = doc.getElementsByName("userkey");
+  const [userkey] = challengeDocument.getElementsByName("userkey");
   const challenge = userkey.getAttribute("challenge");
   if (challenge === null) throw new Error("Missing challenge");
-  const life = doc.querySelector<HTMLInputElement>("#life")!.value;
+  const life =
+    challengeDocument.querySelector<HTMLInputElement>("#life")!.value;
 
   const spkac = await options.getSpkac(challenge);
 

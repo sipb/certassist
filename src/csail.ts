@@ -39,11 +39,11 @@ async function downloadCert(options: Options): Promise<Uint8Array> {
     );
   }
 
-  const doc = new DOMParser().parseFromString(
+  const challengeDocument = new DOMParser().parseFromString(
     formResponse.body!,
     formResponse.fields["Content-Type"][0] as DOMParserSupportedType
   );
-  const [keygen] = doc.getElementsByName("spkac");
+  const [keygen] = challengeDocument.getElementsByName("spkac");
   const keytype = keygen.getAttribute("keytype");
   if (keytype !== "rsa") throw new Error(`Unrecognized keytype ${keytype!}`);
   const challenge = keygen.getAttribute("challenge");
