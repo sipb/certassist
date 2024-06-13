@@ -18,7 +18,8 @@ type Options = {
 
 async function downloadCert(options: Options): Promise<Uint8Array> {
   options.onStatus("Authenticating");
-  const authorization = "Basic " + btoa(options.login + ":" + options.password);
+  const authorization =
+    "Basic " + window.btoa(options.login + ":" + options.password);
   const formResponse = await wsHttpsFetch(
     wsUrl,
     http.createRequest({

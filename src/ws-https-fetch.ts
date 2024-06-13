@@ -49,7 +49,7 @@ async function wsHttpsFetch(
         // (https://github.com/novnc/websockify/issues/312).
         if (bytes.length > 0) {
           try {
-            if (ws.protocol === "base64") ws.send(btoa(bytes));
+            if (ws.protocol === "base64") ws.send(window.btoa(bytes));
             else ws.send(forge.util.binary.raw.decode(bytes));
           } catch (error: unknown) {
             if (done)
@@ -99,7 +99,7 @@ async function wsHttpsFetch(
 
       if (ws.protocol === "base64") {
         ws.addEventListener("message", (event: MessageEvent<string>) => {
-          tls.process(atob(event.data));
+          tls.process(window.atob(event.data));
         });
       } else {
         ws.addEventListener("message", (event: MessageEvent<ArrayBuffer>) => {
