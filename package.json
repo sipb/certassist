@@ -23,8 +23,8 @@
     "@duosecurity/duo_web": "^1.0.5",
     "@fortawesome/fontawesome-free": "^6.1.1",
     "babel-loader": "^9.0.1",
-    "core-js": "^3.26.0",
-    "css-loader": "^6.5.1",
+    "core-js": "^3.37.0",
+    "css-loader": "^7.1.1",
     "git-revision-webpack-plugin": "^5.0.0",
     "html-webpack-plugin": "^5.3.2",
     "mini-css-extract-plugin": "^2.2.2",
@@ -39,17 +39,17 @@
     "@types/git-revision-webpack-plugin": "^3.0.3",
     "@types/node-forge": "^1.0.1",
     "prettier": "^3.0.3",
-    "stylelint": "^15.10.2",
-    "stylelint-config-standard": "^34.0.0",
+    "stylelint": "^16.4.0",
+    "stylelint-config-standard": "^36.0.0",
     "typescript": "^5.0.4",
-    "xo": "^0.56.0"
+    "xo": "^0.58.0"
   },
   "babel": {
     "presets": [
       [
         "@babel/preset-env",
         {
-          "corejs": "3.26",
+          "corejs": "3.37",
           "useBuiltIns": "usage"
         }
       ],
