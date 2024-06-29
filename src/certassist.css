@@ -266,3 +266,7 @@ form pre:not(:empty) {
   color: #999;
   text-decoration: none;
 }
+
+.error {
+  color: #f00;
+}
