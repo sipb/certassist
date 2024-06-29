@@ -239,6 +239,14 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
       .join("; "),
   };
 
+  const startDocument = new DOMParser().parseFromString(
+    startResponse.body!,
+    "text/html"
+  );
+  const csrfmiddlewaretoken = startDocument.querySelector<HTMLInputElement>(
+    "input[name=csrfmiddlewaretoken]"
+  )!.value;
+
   options.onStatus("Authenticating");
   let loginResponse = await wsHttpsFetch(
     wsUrl,
@@ -250,6 +258,7 @@ async function scrapeCertDer(options: ScrapeCertDerOptions): Promise<string> {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: [
+        ["csrfmiddlewaretoken", csrfmiddlewaretoken],
         ["data", "1"],
         ["login", options.login],
         ["password", options.password],
